@@ -25,12 +25,12 @@
 }
 
 .hero h1 {
-  position: relative;
+  /* position: relative; */
   z-index: 3;
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  text-align: center;
   font-size: 4rem;
   color: white;
 }

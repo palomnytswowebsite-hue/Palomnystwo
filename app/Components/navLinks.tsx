@@ -27,7 +27,7 @@ const NavLinks = () => {
 
   return (
     <StyledWrapper className={loading ? "loading" : ""}>
-      <section className="flex justify-between p-8 place-items-center bg-[#E8E8E8] sticky top-0">
+      <section className=" flex flex-wrap lg: justify-between p-8 place-items-center bg-[#E8E8E8] sticky top-0">
         <ul className="example-2 ">
           <li className="icon-content ">
             <a
@@ -182,7 +182,7 @@ const NavLinks = () => {
             <div className="tooltip  ">Google</div>
           </li>
         </ul>
-        <ul className="flex flex-row gap-1.5">
+        <ul className="flex  flex-row gap-1.5">
           <li className="flex items-center ml-1.5 place-items-center ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
