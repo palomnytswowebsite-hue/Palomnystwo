@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Головна",
+    "path": "/"
+  },
+  {
+    "id": 2,
+    "title": "Місто1",
+    "path": "/about"
+  },
+  {
+    "id": 3,
+    "title": "Місто2",
+    "path": "/services"
+  },
+  {
+    "id": 4,
+    "title": "Місто3",
+    "path": "/contact"
+  },
+  {
+    "id": 5,
+    "title": "Місто4",
+    "path": "/contact"
+  },
+  {
+    "id": 6,
+    "title": "Місто5",
+    "path": "/contact"
+  },
+  {
+    "id": 7,
+    "title": "Місто6",
+    "path": "/contact"
+  },
+  {
+    "id": 8,
+    "title": "Місто7",
+    "path": "/contact"
+  }
+]
