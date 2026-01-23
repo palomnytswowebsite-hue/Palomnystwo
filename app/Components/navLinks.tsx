@@ -182,7 +182,7 @@ const NavLinks = () => {
             <div className="tooltip  ">Google</div>
           </li>
         </ul>
-        <ul className="flex  flex-row gap-1.5">
+        <ul className="flex  flex-row gap-1.5 text-black">
           <li className="flex items-center ml-1.5 place-items-center ">
             <svg
               xmlns="http://www.w3.org/2000/svg"

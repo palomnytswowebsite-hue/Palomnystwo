@@ -4,9 +4,9 @@ import React from "react";
 
 export const CardCity = () => {
   return (
-    <div className=" flex flex-wrap justify-center gap-10 mt-10 mb-10">
+    <div className=" flex flex-wrap justify-center gap-10 mt-10 mb-10 bg-white">
       {cardOfCitys.map((city, idx) => (
-        <div className="card bg-base-100 w-96 shadow-sm mb-10">
+        <div className="card  w-96 shadow-sm mb-10 bg-white">
           <React.Fragment key={city.id ?? idx}>
             <figure className="px-10 pt-10">
               <img

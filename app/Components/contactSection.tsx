@@ -11,7 +11,7 @@ export const ContactSection = () => {
         loading="lazy"
         // referrerpolicy="no-referrer-when-downgrade"
       ></iframe>
-      <aside className="flex flex-col md:flex-row gap-6">
+      <aside className="flex flex-col md:flex-row gap-6 text-black">
         <div className="">
           <h2 className="text-2xl font-bold mb-4">Подзвоніть нам:</h2>
           <p className="mb-2">Email: palomnystwo@gmail.com</p>
