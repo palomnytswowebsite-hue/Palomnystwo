@@ -4,6 +4,7 @@ import "../globals.css";
 import { NavMenu } from "./navMenu";
 import { CardCity } from "./cardCity";
 import { Footer } from "./footer";
+import FirestoreDataDisplay from "./FirestoreDataDisplay.tsx";
 import { ContactSection } from "./contactSection";
 export default function ParalaxHeroSection() {
   const bgBackRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,7 @@ export default function ParalaxHeroSection() {
       <section className="content">
         <NavMenu />
         <CardCity />
+        <FirestoreDataDisplay />
         <ContactSection />
         <Footer />
       </section>

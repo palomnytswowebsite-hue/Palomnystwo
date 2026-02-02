@@ -31,31 +31,31 @@ const NavLinks = () => {
         <ul className="example-2 ">
           <li className="icon-content ">
             <a
-              href="https://linkedin.com/"
-              aria-label="LinkedIn"
-              data-social="linkedin"
+              href="https://www.tiktok.com/@uasenjaua?is_from_webapp=1&sender_device=pc"
+              aria-label="Instagram"
+              data-social="instagram"
             >
               <div className="filled" />
               <svg
-                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
                 width={16}
                 height={16}
                 fill="currentColor"
-                className="bi bi-linkedin"
-                viewBox="0 0 16 16"
+                className="bi bi-instagram"
                 xmlSpace="preserve"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"
-                  fill="currentColor"
-                />
+                <g id="SVGRepo_iconCarrier">
+                  {" "}
+                  <path d="M16.656 1.029c1.637-0.025 3.262-0.012 4.886-0.025 0.054 2.031 0.878 3.859 2.189 5.213l-0.002-0.002c1.411 1.271 3.247 2.095 5.271 2.235l0.028 0.002v5.036c-1.912-0.048-3.71-0.489-5.331-1.247l0.082 0.034c-0.784-0.377-1.447-0.764-2.077-1.196l0.052 0.034c-0.012 3.649 0.012 7.298-0.025 10.934-0.103 1.853-0.719 3.543-1.707 4.954l0.020-0.031c-1.652 2.366-4.328 3.919-7.371 4.011l-0.014 0c-0.123 0.006-0.268 0.009-0.414 0.009-1.73 0-3.347-0.482-4.725-1.319l0.040 0.023c-2.508-1.509-4.238-4.091-4.558-7.094l-0.004-0.041c-0.025-0.625-0.037-1.25-0.012-1.862 0.49-4.779 4.494-8.476 9.361-8.476 0.547 0 1.083 0.047 1.604 0.136l-0.056-0.008c0.025 1.849-0.050 3.699-0.050 5.548-0.423-0.153-0.911-0.242-1.42-0.242-1.868 0-3.457 1.194-4.045 2.861l-0.009 0.030c-0.133 0.427-0.21 0.918-0.21 1.426 0 0.206 0.013 0.41 0.037 0.61l-0.002-0.024c0.332 2.046 2.086 3.59 4.201 3.59 0.061 0 0.121-0.001 0.181-0.004l-0.009 0c1.463-0.044 2.733-0.831 3.451-1.994l0.010-0.018c0.267-0.372 0.45-0.822 0.511-1.311l0.001-0.014c0.125-2.237 0.075-4.461 0.087-6.698 0.012-5.036-0.012-10.060 0.025-15.083z"></path>{" "}
+                </g>
               </svg>
             </a>
-            <div className="tooltip">LinkedIn</div>
+            <div className="tooltip">Tiktok</div>
           </li>
           <li className="icon-content ">
             <a
-              href="https://www.facebook.com/"
+              href="https://www.facebook.com/AVEMARIAUA?locale=uk_UA"
               aria-label="Facebook"
               data-social="facebook"
             >
@@ -79,7 +79,7 @@ const NavLinks = () => {
           </li>
           <li className="icon-content ">
             <a
-              href="https://www.instagram.com/"
+              href="https://www.instagram.com/avemaria.palomnyk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
               aria-label="Instagram"
               data-social="instagram"
             >
@@ -101,44 +101,26 @@ const NavLinks = () => {
             </a>
             <div className="tooltip">Instagram</div>
           </li>
+
           <li className="icon-content ">
             <a
-              href="https://youtube.com/"
-              aria-label="twiter"
-              data-social="twiter"
+              href="https://www.youtube.com/@aveisusimaria"
+              aria-label="youtube"
+              data-social="youtube"
             >
               <div className="filled" />
 
               <svg
                 fill="currentColor"
+                version="1.1"
                 width={16}
                 height={16}
-                version="1.1"
-                id="Layer_1"
                 xmlns="http://www.w3.org/2000/svg"
-                className="bi bi-youtube"
-                viewBox="-271 296.6 256.4 208.4"
+                viewBox="0 0 96.875 96.875"
                 xmlSpace="preserve"
+                className="bi bi-youtube"
               >
-                <path d="M-14.6,321.2c-9.4,4.2-19.6,7-30.2,8.3c10.9-6.5,19.2-16.8,23.1-29.1c-10.2,6-21.4,10.4-33.4,12.8 c-9.6-10.2-23.3-16.6-38.4-16.6c-29,0-52.6,23.6-52.6,52.6c0,4.1,0.4,8.1,1.4,12c-43.7-2.2-82.5-23.1-108.4-55 c-4.5,7.8-7.1,16.8-7.1,26.5c0,18.2,9.3,34.3,23.4,43.8c-8.6-0.3-16.7-2.7-23.8-6.6v0.6c0,25.5,18.1,46.8,42.2,51.6 c-4.4,1.2-9.1,1.9-13.9,1.9c-3.4,0-6.7-0.3-9.9-0.9c6.7,20.9,26.1,36.1,49.1,36.5c-18,14.1-40.7,22.5-65.3,22.5 c-4.2,0-8.4-0.2-12.6-0.7c23.3,14.9,50.9,23.6,80.6,23.6c96.8,0,149.7-80.2,149.7-149.7c0-2.3,0-4.6-0.1-6.8 C-30.5,341-21.6,331.8-14.6,321.2"></path>{" "}
-              </svg>
-            </a>
-            <div className="tooltip ">Twitter</div>
-          </li>
-          <li className="icon-content ">
-            <a
-              href="https://youtube.com/"
-              aria-label="google"
-              data-social="google"
-            >
-              <div className="filled" />
-
-              <svg
-                viewBox="0 0 20 20"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="#000000"
-              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                 <g
                   id="SVGRepo_tracerCarrier"
                   stroke-linecap="round"
@@ -146,40 +128,14 @@ const NavLinks = () => {
                 ></g>
                 <g id="SVGRepo_iconCarrier">
                   {" "}
-                  <title>google [currentColor]</title>{" "}
-                  <desc>Created with Sketch.</desc> <defs> </defs>{" "}
-                  <g
-                    id="Page-1"
-                    stroke="none"
-                    stroke-width="1"
-                    fill="none"
-                    fill-rule="evenodd"
-                  >
+                  <g>
                     {" "}
-                    <g
-                      id="Dribbble-Light-Preview"
-                      transform="translate(-300.000000, -7399.000000)"
-                      fill="currentColor"
-                    >
-                      {" "}
-                      <g
-                        id="icons"
-                        transform="translate(56.000000, 160.000000)"
-                      >
-                        {" "}
-                        <path
-                          d="M263.821537,7247.00386 L254.211298,7247.00386 C254.211298,7248.0033 254.211298,7250.00218 254.205172,7251.00161 L259.774046,7251.00161 C259.560644,7252.00105 258.804036,7253.40026 257.734984,7254.10487 C257.733963,7254.10387 257.732942,7254.11086 257.7309,7254.10986 C256.309581,7255.04834 254.43389,7255.26122 253.041161,7254.98137 C250.85813,7254.54762 249.130492,7252.96451 248.429023,7250.95364 C248.433107,7250.95064 248.43617,7250.92266 248.439233,7250.92066 C248.000176,7249.67336 248.000176,7248.0033 248.439233,7247.00386 L248.438212,7247.00386 C249.003881,7245.1669 250.783592,7243.49084 252.969687,7243.0321 C254.727956,7242.65931 256.71188,7243.06308 258.170978,7244.42831 C258.36498,7244.23842 260.856372,7241.80579 261.043226,7241.6079 C256.0584,7237.09344 248.076756,7238.68155 245.090149,7244.51127 L245.089128,7244.51127 C245.089128,7244.51127 245.090149,7244.51127 245.084023,7244.52226 L245.084023,7244.52226 C243.606545,7247.38565 243.667809,7250.75975 245.094233,7253.48622 C245.090149,7253.48921 245.087086,7253.49121 245.084023,7253.49421 C246.376687,7256.0028 248.729215,7257.92672 251.563684,7258.6593 C254.574796,7259.44886 258.406843,7258.90916 260.973794,7256.58747 C260.974815,7256.58847 260.975836,7256.58947 260.976857,7256.59047 C263.15172,7254.63157 264.505648,7251.29445 263.821537,7247.00386"
-                          id="google-[currentColor]"
-                        >
-                          {" "}
-                        </path>{" "}
-                      </g>{" "}
-                    </g>{" "}
+                    <path d="M95.201,25.538c-1.186-5.152-5.4-8.953-10.473-9.52c-12.013-1.341-24.172-1.348-36.275-1.341 c-12.105-0.007-24.266,0-36.279,1.341c-5.07,0.567-9.281,4.368-10.467,9.52C0.019,32.875,0,40.884,0,48.438 C0,55.992,0,64,1.688,71.336c1.184,5.151,5.396,8.952,10.469,9.52c12.012,1.342,24.172,1.349,36.277,1.342 c12.107,0.007,24.264,0,36.275-1.342c5.07-0.567,9.285-4.368,10.471-9.52c1.689-7.337,1.695-15.345,1.695-22.898 C96.875,40.884,96.889,32.875,95.201,25.538z M35.936,63.474c0-10.716,0-21.32,0-32.037c10.267,5.357,20.466,10.678,30.798,16.068 C56.434,52.847,46.23,58.136,35.936,63.474z"></path>{" "}
                   </g>{" "}
                 </g>
               </svg>
             </a>
-            <div className="tooltip  ">Google</div>
+            <div className="tooltip">Youtube</div>
           </li>
         </ul>
         <ul className="flex  flex-row gap-1.5 text-black">
@@ -196,7 +152,7 @@ const NavLinks = () => {
                 clipRule="evenodd"
               />
             </svg>
-            123-456-7890
+            050 101 07 42
           </li>
           <li className="flex items-center place-items-center ml-1.5 ">
             <svg
@@ -208,7 +164,7 @@ const NavLinks = () => {
               <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
               <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
             </svg>
-            palomnystwo@gmail.com
+            uasenja@gmail.com
           </li>
         </ul>
       </section>
@@ -310,11 +266,6 @@ const StyledWrapper = styled.div`
     }
   }
 
-  .example-2 .icon-content a[data-social="linkedin"] .filled,
-  .example-2 .icon-content a[data-social="linkedin"] ~ .tooltip {
-    background-color: #0274b3;
-  }
-
   .example-2 .icon-content a[data-social="facebook"] .filled,
   .example-2 .icon-content a[data-social="facebook"] ~ .tooltip {
     background-color: #162456;
@@ -338,6 +289,10 @@ const StyledWrapper = styled.div`
   .example-2 .icon-content a[data-social="google"] .filled,
   .example-2 .icon-content a[data-social="google"] ~ .tooltip {
     background-color: #d88b2b;
+  }
+  .example-2 .icon-content a[data-social="youtube"] .filled,
+  .example-2 .icon-content a[data-social="youtube"] ~ .tooltip {
+    background-color: #ff0000;
   }
 `;
 

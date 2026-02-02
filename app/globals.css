@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+body {
+  background-color: white;
+  color: black;
+}
+
 .hero {
   position: relative;
   height: 100vh;
