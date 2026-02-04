@@ -20,12 +20,12 @@ body {
 }
 
 .bg-back {
-  background-image: url("/img1.jpg");
+  background-image: url("https://res.cloudinary.com/dwl1expbx/image/upload/v1770135112/img1_c8eugm.jpg");
   z-index: 1;
 }
 
 .bg-front {
-  background-image: url("/img1.jpg");
+  background-image: url("https://res.cloudinary.com/dwl1expbx/image/upload/v1770135112/img1_c8eugm.jpg");
   z-index: 2;
 }
 
@@ -42,4 +42,28 @@ body {
 
 .content {
   height: 100%;
+}
+
+/* Responsive example: styles for screens between 414px and 1120px */
+@media screen and (min-width: 414px) and (max-width: 1120px) {
+  .bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .bg-back {
+    background-image: url("https://res.cloudinary.com/dwl1expbx/image/upload/v1770135123/Lourdes_nf5pux.jpg");
+    z-index: 1;
+  }
+
+  .bg-front {
+    background-image: url("https://res.cloudinary.com/dwl1expbx/image/upload/v1770135123/Lourdes_nf5pux.jpg");
+    z-index: 2;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+  }
 }

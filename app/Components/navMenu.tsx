@@ -1,6 +1,44 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase/config";
+
 export const NavMenu = () => {
+  const [cityNames, setCityNames] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Функція завантаження даних з Firestore
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "1City"));
+        const names: string[] = snapshot.docs.map((doc) => doc.data().Name);
+        setCityNames(names);
+      } catch (err) {
+        console.error("Firestore error:", err);
+        setError("Не вдалося завантажити дані з бази");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCities();
+  }, []);
+
+  // Функція рендеру списку імен
+  const renderCityNames = () => {
+    if (loading) return <li>Завантаження даних...</li>;
+    if (error) return <li style={{ color: "red" }}>{error}</li>;
+
+    return cityNames.map((name, idx) => (
+      <li key={idx} className="hover:bg-base-300 rounded px-2 py-1">
+        {name}
+      </li>
+    ));
+  };
+
   return (
     <nav className="sticky top-0 z-50">
       <div className="drawer">
@@ -29,17 +67,9 @@ export const NavMenu = () => {
                 </svg>
               </label>
             </div>
-            <div className="mx-2 flex-1 px-2">Navbar Title</div>
+            <div className="mx-2 flex-1 px-2 font-bold">Navbar Title</div>
             <div className="hidden flex-none lg:block">
-              <ul className="menu menu-horizontal">
-                {/* Navbar menu content here */}
-                <li>
-                  <a>Navbar Item 1</a>
-                </li>
-                <li>
-                  <a>Navbar Item 2</a>
-                </li>
-              </ul>
+              <ul className="menu menu-horizontal">{renderCityNames()}</ul>
             </div>
           </div>
         </div>
@@ -50,13 +80,7 @@ export const NavMenu = () => {
             className="drawer-overlay"
           ></label>
           <ul className="menu bg-base-200 min-h-full w-80 p-4">
-            {/* Sidebar content here */}
-            <li>
-              <a>Sidebar Item 1</a>
-            </li>
-            <li>
-              <a>Sidebar Item 2</a>
-            </li>
+            {renderCityNames()}
           </ul>
         </div>
       </div>

@@ -34,6 +34,7 @@ const NavLinks = () => {
               href="https://www.tiktok.com/@uasenjaua?is_from_webapp=1&sender_device=pc"
               aria-label="Instagram"
               data-social="instagram"
+              target="_blank"
             >
               <div className="filled" />
               <svg
@@ -58,6 +59,7 @@ const NavLinks = () => {
               href="https://www.facebook.com/AVEMARIAUA?locale=uk_UA"
               aria-label="Facebook"
               data-social="facebook"
+              target="_blank"
             >
               <div className="filled" />
 
@@ -82,6 +84,7 @@ const NavLinks = () => {
               href="https://www.instagram.com/avemaria.palomnyk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
               aria-label="Instagram"
               data-social="instagram"
+              target="_blank"
             >
               <div className="filled" />
               <svg
@@ -107,6 +110,7 @@ const NavLinks = () => {
               href="https://www.youtube.com/@aveisusimaria"
               aria-label="youtube"
               data-social="youtube"
+              target="_blank"
             >
               <div className="filled" />
 
@@ -120,11 +124,11 @@ const NavLinks = () => {
                 xmlSpace="preserve"
                 className="bi bi-youtube"
               >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                 <g
                   id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 ></g>
                 <g id="SVGRepo_iconCarrier">
                   {" "}

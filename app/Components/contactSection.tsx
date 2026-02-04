@@ -14,15 +14,23 @@ export const ContactSection = () => {
       <aside className="flex flex-col md:flex-row gap-6 text-black">
         <div className="">
           <h2 className="text-2xl font-bold mb-4">Подзвоніть нам:</h2>
-          <p className="mb-2">Email: palomnystwo@gmail.com</p>
-          <p className="mb-2">Phone: +48 123 456 789</p>
+          <p className="mb-2">Email: uasenja@gmail.com</p>
+          <p className="mb-2">Телефон: 050 101 07 42</p>
+          <p className="mb-2">Телефон: 050 237 84 04</p>
+          <p className="mb-2">Телефон: 096 935 5298</p>
         </div>
         <div className="">
           <h2 className="text-2xl font-bold mb-4">Напишіть нам:</h2>
           <div className=" gap-2">
-            <button type="submit">Viber</button>
+            <button type="submit">
+              <a href="http://" target="_blank" rel="noopener noreferrer">
+                Viber
+              </a>{" "}
+            </button>
             <br />
-            <button type="submit">Telegram</button>
+            <button type="submit">
+              <a href="http://" target="_blank" rel="noopener noreferrer"></a>
+            </button>
             <br />
             <button type="submit">WhatsApp</button>
             <br />

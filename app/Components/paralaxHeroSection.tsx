@@ -1,11 +1,11 @@
 "use client";
 import { useRef, useEffect } from "react";
 import "../globals.css";
-import { NavMenu } from "./navMenu";
 import { CardCity } from "./cardCity";
+import { NavMenu } from "./navMenu";
 import { Footer } from "./footer";
-import FirestoreDataDisplay from "./FirestoreDataDisplay.tsx";
 import { ContactSection } from "./contactSection";
+import { AboutUs } from "./aboutUs";
 export default function ParalaxHeroSection() {
   const bgBackRef = useRef<HTMLDivElement>(null);
   const bgFrontRef = useRef<HTMLDivElement>(null);
@@ -45,7 +45,7 @@ export default function ParalaxHeroSection() {
       <section className="content">
         <NavMenu />
         <CardCity />
-        <FirestoreDataDisplay />
+        <AboutUs />
         <ContactSection />
         <Footer />
       </section>
