@@ -36,12 +36,6 @@ export const AboutUs = () => {
         з нас прагне спокійного відпочинку , який маємо надію буде згадуватися
         ще довгий проміжок часу .
       </p>
-      <img
-        src="https://res.cloudinary.com/dwl1expbx/image/upload/v1770135079/pngwing.com_pc0r7p.png"
-        alt=""
-        height="250px"
-        width={"250px"}
-      />
     </div>
   );
 };

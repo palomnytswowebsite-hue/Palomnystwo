@@ -38,7 +38,7 @@ export default function ParalaxHeroSection() {
         <div ref={bgFrontRef} className="bg bg-front" />
 
         <h1 className="flex-col" ref={textRef}>
-          <div className="text-6xl">&#x26AA;</div>Назва Компанії
+          <div className="text-6xl">&#x26AA;</div>AVE MARIA
         </h1>
       </section>
 
