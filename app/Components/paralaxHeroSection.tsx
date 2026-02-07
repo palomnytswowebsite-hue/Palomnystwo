@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import "../../app/globals.css";
-import { City } from "../page";
+import { City } from "../Components/HomeClient";
 import { NavMenu } from "./navMenu";
 import { CardCityList } from "./CardCityList";
 import { AboutUs } from "./aboutUs";

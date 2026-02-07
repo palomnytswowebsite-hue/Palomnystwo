@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { City } from "../page";
+import { City } from "../Components/HomeClient";
 import { CardCity } from "./cardCity";
 
 interface Props {

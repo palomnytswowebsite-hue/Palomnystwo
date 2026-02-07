@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { City } from "../page";
+import { City } from "../Components/HomeClient";
 
 interface Props {
   city: City;
