@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 
@@ -23,14 +23,21 @@ export interface City {
 
 export default function HomeClient() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [allCities, setAllCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const selectedType = searchParams.get("type") || undefined;
-  const selectedCountry = searchParams.get("country") || undefined;
+  const [selectedType, setSelectedType] = useState<string | undefined>();
+  const [selectedCountry, setSelectedCountry] = useState<string | undefined>();
 
+  // Парсим search params на клієнті
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setSelectedType(params.get("type") || undefined);
+    setSelectedCountry(params.get("country") || undefined);
+  }, []);
+
+  /* ========== FETCH DATA ========== */
   useEffect(() => {
     const fetchCities = async () => {
       setLoading(true);
@@ -70,6 +77,7 @@ export default function HomeClient() {
     fetchCities();
   }, []);
 
+  /* ========== FILTER + SORT ========== */
   const visibleCities = useMemo(() => {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -94,7 +102,6 @@ export default function HomeClient() {
         const dateB = b.DateOfBeggining
           ? parseDate(b.DateOfBeggining)
           : new Date(9999, 0, 1);
-
         const diffA =
           dateA.getFullYear() * 12 +
           dateA.getMonth() -
@@ -103,13 +110,12 @@ export default function HomeClient() {
           dateB.getFullYear() * 12 +
           dateB.getMonth() -
           (currentYear * 12 + currentMonth);
-
         return diffA - diffB;
       });
   }, [allCities, selectedType, selectedCountry]);
 
   const updateFilter = (key: string, value?: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     if (value) params.set(key, value);
     else params.delete(key);
     router.push(`?${params.toString()}`, { scroll: false });
