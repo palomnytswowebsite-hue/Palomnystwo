@@ -1,91 +1,172 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase/config";
 
-interface CountryData {
-  Country: string;
-  CountryUa: string;
-  id: string; // для унікального ключа
+const TYPES = [
+  { slug: "pilgrimage", name: "Паломництва" },
+  { slug: "excursion", name: "Екскурсії" },
+  { slug: "adventure", name: "Пригоди" },
+  { slug: "sea", name: "Море" },
+];
+
+const COUNTRIES = [
+  { name: "Угорщина", slug: "hungary" },
+  { name: "Італія", slug: "italy" },
+  { name: "Ізраїль", slug: "israel" },
+  { name: "Франція", slug: "france" },
+];
+
+interface Props {
+  selectedType?: string;
+  selectedCountry?: string;
+  setType: (v?: string) => void;
+  setCountry: (v?: string) => void;
 }
 
-export const NavMenu = () => {
-  const [countries, setCountries] = useState<CountryData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const allCountries: CountryData[] = [];
-        const collectionsToFetch = ["1CityOfPalomnystwo", "3CityOfPalomnystwo"];
-
-        for (const collName of collectionsToFetch) {
-          const snapshot = await getDocs(collection(db, collName));
-
-          snapshot.docs.forEach((doc) => {
-            const data = doc.data();
-            console.log("Doc data:", doc.id, data); // перевірка даних
-
-            // --- якщо Country та CountryUa масиви ---
-            if (Array.isArray(data.Country) && Array.isArray(data.CountryUa)) {
-              data.Country.forEach((country: string, index: number) => {
-                allCountries.push({
-                  Country: country.trim(),
-                  CountryUa: (data.CountryUa[index] || country).trim(),
-                  id: doc.id + "-" + index, // унікальний ключ
-                });
-              });
-            }
-            // --- якщо Country та CountryUa рядки ---
-            else if (typeof data.Country === "string") {
-              allCountries.push({
-                Country: data.Country.trim(),
-                CountryUa:
-                  typeof data.CountryUa === "string"
-                    ? data.CountryUa.trim()
-                    : data.Country.trim(),
-                id: doc.id,
-              });
-            }
-          });
-        }
-
-        // Робимо список унікальним за англійською назвою
-        const uniqueCountries = Array.from(
-          new Map(allCountries.map((c) => [c.Country, c])).values(),
-        );
-
-        setCountries(uniqueCountries);
-      } catch (err) {
-        console.error(err);
-        setError("Не вдалося завантажити країни");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCountries();
-  }, []);
-
-  const renderCountries = () => {
-    if (loading) return <li>Завантаження...</li>;
-    if (error) return <li className="text-red-500">{error}</li>;
-
-    return countries.map((country) => (
-      <li key={country.id} className="hover:bg-base-300 rounded px-2 py-1">
-        <Link href={`/countries/${encodeURIComponent(country.Country)}`}>
-          {country.CountryUa}
-        </Link>
-      </li>
-    ));
-  };
-
+export const NavMenu = ({
+  selectedType,
+  selectedCountry,
+  setType,
+  setCountry,
+}: Props) => {
   return (
-    <nav className="sticky top-0 z-50 bg-base-100 shadow-sm">
-      <ul className="menu menu-horizontal">{renderCountries()}</ul>
-    </nav>
+    <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+      {/* Ліва частина навігації */}
+      <div className="navbar-start">
+        {/* Мобільний дропдаун */}
+        <div className="dropdown lg:hidden">
+          <label tabIndex={0} className="btn btn-ghost">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            </svg>
+          </label>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-1"
+          >
+            {/* Список типів турів */}
+            {TYPES.map((t) => (
+              <li key={t.slug}>
+                <button
+                  onClick={() =>
+                    setType(selectedType === t.slug ? undefined : t.slug)
+                  }
+                  className={`px-3 py-2 rounded ${
+                    selectedType === t.slug ? "bg-base-200 font-bold" : ""
+                  }`}
+                >
+                  {t.name}
+                </button>
+              </li>
+            ))}
+
+            {/* Список країн */}
+            <li className="mt-2">
+              <select
+                className="select select-bordered w-full"
+                value={selectedCountry || ""}
+                onChange={(e) => setCountry(e.target.value || undefined)}
+              >
+                <option value="">Всі країни</option>
+                {COUNTRIES.map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </li>
+
+            {/* Скидання фільтрів */}
+            {(selectedType || selectedCountry) && (
+              <li className="mt-2">
+                <button
+                  onClick={() => {
+                    setType(undefined);
+                    setCountry(undefined);
+                  }}
+                  className="px-3 py-2 rounded bg-red-200 hover:bg-red-300 font-semibold w-full"
+                >
+                  Скасувати фільтри
+                </button>
+              </li>
+            )}
+          </ul>
+        </div>
+
+        <a className="btn btn-ghost text-xl ml-2">daisyUI</a>
+      </div>
+
+      {/* Центральна частина навігації для десктопу */}
+      <div className="navbar-center hidden lg:flex">
+        <ul className="menu menu-horizontal px-1 items-center gap-2">
+          <li>
+            {" "}
+            <Link href="/">Головна</Link>{" "}
+          </li>
+          {/* Типи турів — завжди видно */}
+          {TYPES.map((t) => (
+            <li key={t.slug}>
+              <button
+                onClick={() =>
+                  setType(selectedType === t.slug ? undefined : t.slug)
+                }
+                className={`px-3 py-2 rounded ${
+                  selectedType === t.slug ? "bg-base-200 font-bold" : ""
+                }`}
+              >
+                {t.name}
+              </button>
+            </li>
+          ))}
+
+          {/* Список країн */}
+          <li>
+            <select
+              className="select select-bordered ml-2"
+              value={selectedCountry || ""}
+              onChange={(e) => setCountry(e.target.value || undefined)}
+            >
+              <option value="">Всі країни</option>
+              {COUNTRIES.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </li>
+
+          {/* Скидання фільтрів */}
+          {(selectedType || selectedCountry) && (
+            <li>
+              <button
+                onClick={() => {
+                  setType(undefined);
+                  setCountry(undefined);
+                }}
+                className="px-3 py-2 rounded bg-red-200 hover:bg-red-300 font-semibold"
+              >
+                Скасувати фільтри
+              </button>
+            </li>
+          )}
+        </ul>
+      </div>
+
+      {/* Права частина навігації */}
+      <div className="navbar-end">
+        <a className="btn">Button</a>
+      </div>
+    </div>
   );
 };

@@ -1,84 +1,53 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { City } from "../page";
 
-interface City {
-  id: string;
-  Name: string;
-  slug: string;
-  img1?: string;
-  img2?: string;
-  img3?: string;
-  img4?: string;
-  description?: string;
-  Country: string[];
+interface Props {
+  city: City;
 }
 
-interface CardCityProps {
-  cities?: City[]; // якщо передані через пропс
-}
+export const CardCity = ({ city }: Props) => {
+  const countryList = Array.isArray(city.Country) ? city.Country : [];
 
-export const CardCity = ({ cities: initialCities }: CardCityProps) => {
-  const [cities, setCities] = useState<City[]>(initialCities || []);
-  const [loading, setLoading] = useState(!initialCities?.length);
-  const [error, setError] = useState<string | null>(null);
-
-  // Якщо пропсів немає, підвантажуємо всі тури
-  useEffect(() => {
-    if (initialCities && initialCities.length) return;
-
-    const fetchCities = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, "1City"));
-        const data: City[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as City[];
-        setCities(data);
-      } catch (err) {
-        console.error("Firestore error:", err);
-        setError("Не вдалося завантажити дані з бази");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCities();
-  }, [initialCities]);
-
-  if (loading) return <p className="text-center mt-10">Завантаження...</p>;
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
-  if (!cities.length)
-    return <p className="text-center mt-10">Турів не знайдено</p>;
+  const formattedDate = city.DateOfBeggining
+    ? (() => {
+        const [day, month, year] = city.DateOfBeggining.split(".");
+        const date = new Date(Number(year), Number(month) - 1, Number(day));
+        return isNaN(date.getTime()) ? "" : date.toLocaleDateString();
+      })()
+    : "";
 
   return (
-    <div className="flex flex-wrap justify-center gap-10 mr-7 ml-7 mt-10 mb-10 bg-white">
-      {cities.map((city) => (
-        <div key={city.id} className="card w-96 shadow-sm mb-10 bg-white">
-          <figure className="px-10 pt-10">
-            <img
-              src={
-                city.img1 ??
-                "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-              }
-              alt={city.Name}
-              className="rounded-xl"
-            />
-          </figure>
-          <div className="card-body items-center text-center">
-            <h2 className="card-title">{city.Name}</h2>
-            <p>{city.description}</p>
-            <div className="card-actions">
-              <Link href={`/cities/${city.slug}`} className="btn btn-primary">
-                Детальніше
-              </Link>
-            </div>
-          </div>
+    <div className="w-full sm:w-96">
+      <div className="card bg-white shadow">
+        <figure className="px-10 pt-10">
+          <img
+            src={
+              city.img1 ||
+              "https://res.cloudinary.com/dwl1expbx/image/upload/v1770135112/grayFotoCity_a3ccak.jpg"
+            }
+            alt={city.Name}
+            className="rounded-xl"
+          />
+        </figure>
+
+        <div className="card-body text-center">
+          <h2 className="card-title">{city.Name}</h2>
+          <p>{city.typeUa.join(", ")}</p>
+          <p>{countryList.join(", ")}</p>
+          {formattedDate && (
+            <p className="text-sm text-gray-500">{formattedDate}</p>
+          )}
+          <Link
+            href={`/cities/${city.slug}`}
+            target="_blank"
+            className="btn btn-primary"
+          >
+            Детальніше
+          </Link>
         </div>
-      ))}
+      </div>
     </div>
   );
 };
