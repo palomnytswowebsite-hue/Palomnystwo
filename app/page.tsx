@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
@@ -22,7 +22,7 @@ export interface City {
 
 export default function Home() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // ← тут просто на верхньому рівні
 
   const [allCities, setAllCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
@@ -31,28 +31,25 @@ export default function Home() {
   const selectedCountry = searchParams.get("country") || undefined;
 
   /* ========== FETCH DATA ========== */
-  useEffect(() => {
+  useState(() => {
     const fetchCities = async () => {
       setLoading(true);
       const snapshot = await getDocs(collection(db, "1City"));
 
       const data: City[] = snapshot.docs.map((doc) => {
         const raw = doc.data();
-
         return {
           id: doc.id,
           Name: raw.Name,
           slug: raw.slug,
           img1: raw.img1 ?? "",
           DateOfBeggining: raw.DateOfBeggining,
-
           type: Array.isArray(raw.type) ? raw.type : raw.type ? [raw.type] : [],
           typeUa: Array.isArray(raw.typeUa)
             ? raw.typeUa
             : raw.typeUa
               ? [raw.typeUa]
               : [],
-
           Country: Array.isArray(raw.Country)
             ? raw.Country
             : raw.Country
@@ -71,9 +68,9 @@ export default function Home() {
     };
 
     fetchCities();
-  }, []);
+  });
 
-  /* ========== FILTER + SORT по найближчій даті від поточного місяця ========== */
+  /* ========== FILTER + SORT по даті ========== */
   const visibleCities = useMemo(() => {
     const now = new Date();
     const currentMonth = now.getMonth();
