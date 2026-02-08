@@ -45,27 +45,32 @@ export default function HomeClient() {
 
       const data: City[] = snapshot.docs.map((doc) => {
         const raw = doc.data();
+
         return {
           id: doc.id,
           Name: raw.Name,
           slug: raw.slug,
           img1: raw.img1 ?? "",
           DateOfBeggining: raw.DateOfBeggining,
-          type: Array.isArray(raw.type) ? raw.type : raw.type ? [raw.type] : [],
-          typeUa: Array.isArray(raw.typeUa)
-            ? raw.typeUa
-            : raw.typeUa
-              ? [raw.typeUa]
-              : [],
+
           Country: Array.isArray(raw.Country)
             ? raw.Country
             : raw.Country
               ? [raw.Country]
               : [],
+
           CountrySlug: Array.isArray(raw.CountrySlug)
             ? raw.CountrySlug
             : raw.CountrySlug
               ? [raw.CountrySlug]
+              : [],
+
+          type: Array.isArray(raw.type) ? raw.type : raw.type ? [raw.type] : [],
+
+          typeUa: Array.isArray(raw.typeUa)
+            ? raw.typeUa
+            : raw.typeUa
+              ? [raw.typeUa]
               : [],
         };
       });
