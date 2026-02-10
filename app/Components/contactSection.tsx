@@ -2,11 +2,12 @@
 
 export const ContactSection = () => {
   return (
-    <div className="flex flex-col md:flex-row justify-center  gap-8 p-8 bg-gray-200">
+    <div className="flex flex-col md:flex-row justify-center  gap-8 p-8 bg-gray-200 mt-5">
       <iframe
+        className="w-56 h-56 lg: w-80 h-80"
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d41954.990295633215!2d24.717129!3d48.911831400000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4730c16c34b0381d%3A0xd6d32394e59e41c2!2z0IbQstCw0L3Qvi3QpNGA0LDQvdC60ZbQstGB0YzQuiwg0IbQstCw0L3Qvi3QpNGA0LDQvdC60ZbQstGB0YzQutCwINC-0LHQu9Cw0YHRgtGMLCDQo9C60YDQsNGX0L3QsCwgNzYwMDA!5e0!3m2!1suk!2spl!4v1769176685110!5m2!1suk!2spl"
-        width="350"
-        height="350"
+        width="100%"
+        height="100%"
         style={{ border: 0 }}
         loading="lazy"
         // referrerpolicy="no-referrer-when-downgrade"

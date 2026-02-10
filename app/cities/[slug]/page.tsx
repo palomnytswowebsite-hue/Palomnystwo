@@ -135,7 +135,10 @@ const CityPage = ({
       />
 
       <div className="max-w-4xl mx-auto p-6">
-        <h1 ref={textRef} className="text-3xl font-bold mb-4">
+        <h1
+          ref={textRef}
+          className="text-3xl text-center text-[#5D866C] font-bold mb-4"
+        >
           {city.Name}
         </h1>
 

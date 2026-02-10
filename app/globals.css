@@ -6,6 +6,10 @@ body {
   color: black;
 }
 
+.marginAuto {
+  margin: auto 0;
+}
+
 .hero {
   position: relative;
   height: 100vh;

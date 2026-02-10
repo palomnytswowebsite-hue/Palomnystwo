@@ -27,7 +27,7 @@ const NavLinks = () => {
 
   return (
     <StyledWrapper className={loading ? "loading" : ""}>
-      <section className=" flex flex-wrap gap-4 lg: justify-between p-8 place-items-center bg-[#E8E8E8] sticky top-0">
+      <section className=" flex flex-wrap gap-4 lg: justify-between p-8 place-items-center bg-[#E6D8C3] sticky top-0">
         <ul className="example-2 ">
           <li className="icon-content ">
             <a

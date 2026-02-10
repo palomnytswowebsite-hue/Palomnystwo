@@ -1,19 +1,19 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
 
 const TYPES = [
-  { slug: "pilgrimage", name: "Паломництва" },
-  { slug: "excursion", name: "Екскурсії" },
-  { slug: "adventure", name: "Пригоди" },
-  { slug: "sea", name: "Море" },
+  { slug: "pilgrimage", label: "Паломництва" },
+  { slug: "excursion", label: "Екскурсії" },
+  { slug: "adventure", label: "Пригоди" },
+  { slug: "sea", label: "Море" },
 ];
 
 const COUNTRIES = [
-  { name: "Угорщина", slug: "hungary" },
-  { name: "Італія", slug: "italy" },
-  { name: "Ізраїль", slug: "israel" },
-  { name: "Франція", slug: "france" },
+  { slug: "italy", label: "Італія" },
+  { slug: "hungary", label: "Угорщина" },
+  { slug: "france", label: "Франція" },
+  { slug: "israel", label: "Ізраїль" },
 ];
 
 interface Props {
@@ -29,144 +29,128 @@ export const NavMenu = ({
   setType,
   setCountry,
 }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50">
-      {/* Ліва частина навігації */}
-      <div className="navbar-start">
-        {/* Мобільний дропдаун */}
-        <div className="dropdown lg:hidden">
-          <label tabIndex={0} className="btn btn-ghost">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />
-            </svg>
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-1"
-          >
-            {/* Список типів турів */}
-            {TYPES.map((t) => (
-              <li key={t.slug}>
-                <button
-                  onClick={() =>
-                    setType(selectedType === t.slug ? undefined : t.slug)
-                  }
-                  className={`px-3 py-2 rounded ${
-                    selectedType === t.slug ? "bg-base-200 font-bold" : ""
-                  }`}
-                >
-                  {t.name}
-                </button>
-              </li>
-            ))}
+    <nav className="sticky top-0 z-50 bg-[#E6D8C3] border-b">
+      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Логотип або заголовок */}
+        <div className="text-xl font-bold">AVE MARIA</div>
 
-            {/* Список країн */}
-            <li className="mt-2">
-              <select
-                className="select select-bordered w-full"
-                value={selectedCountry || ""}
-                onChange={(e) => setCountry(e.target.value || undefined)}
-              >
-                <option value="">Всі країни</option>
-                {COUNTRIES.map((c) => (
-                  <option key={c.slug} value={c.slug}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </li>
+        {/* Гамбургер кнопка для мобільних */}
+        <button
+          className="md:hidden px-3 py-2 border rounded"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? "✕" : "☰"}
+        </button>
 
-            {/* Скидання фільтрів */}
-            {(selectedType || selectedCountry) && (
-              <li className="mt-2">
-                <button
-                  onClick={() => {
-                    setType(undefined);
-                    setCountry(undefined);
-                  }}
-                  className="px-3 py-2 rounded bg-red-200 hover:bg-red-300 font-semibold w-full"
-                >
-                  Скасувати фільтри
-                </button>
-              </li>
-            )}
-          </ul>
-        </div>
-
-        <a className="btn btn-ghost text-xl ml-2">daisyUI</a>
-      </div>
-
-      {/* Центральна частина навігації для десктопу */}
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 items-center gap-2">
-          <li>
-            {" "}
-            <Link href="/">Головна</Link>{" "}
-          </li>
-          {/* Типи турів — завжди видно */}
+        {/* Навігація для десктопу */}
+        <div className="hidden md:flex gap-4 items-center">
           {TYPES.map((t) => (
-            <li key={t.slug}>
-              <button
-                onClick={() =>
-                  setType(selectedType === t.slug ? undefined : t.slug)
-                }
-                className={`px-3 py-2 rounded ${
-                  selectedType === t.slug ? "bg-base-200 font-bold" : ""
+            <button
+              key={t.slug}
+              onClick={() =>
+                setType(selectedType === t.slug ? undefined : t.slug)
+              }
+              className={`px-4 py-2 rounded-full border transition
+                ${
+                  selectedType === t.slug
+                    ? "bg-[#5D866C] text-white"
+                    : "bg-white hover:bg-gray-100"
                 }`}
-              >
-                {t.name}
-              </button>
-            </li>
+            >
+              {t.label}
+            </button>
           ))}
 
-          {/* Список країн */}
-          <li>
+          <select
+            value={selectedCountry || ""}
+            onChange={(e) => setCountry(e.target.value || undefined)}
+            className="px-4 py-2 rounded border bg-white"
+          >
+            <option value="">Всі країни</option>
+            {COUNTRIES.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+
+          {(selectedType || selectedCountry) && (
+            <button
+              onClick={() => {
+                setType(undefined);
+                setCountry(undefined);
+              }}
+              className="px-4 py-2 rounded bg-red-200 hover:bg-red-300"
+            >
+              Скинути
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Drawer для мобільних */}
+      {isOpen && (
+        <div className="md:hidden fixed inset-0 bg-black bg-opacity-30 z-40">
+          <div className="fixed top-0 left-0 w-64 h-full bg-[#E6D8C3] p-4 shadow-lg z-50 flex flex-col gap-4">
+            <h2 className="text-lg font-bold mb-2">Фільтри</h2>
+
+            {/* TYPES */}
+            <div className="flex flex-col gap-2">
+              {TYPES.map((t) => (
+                <button
+                  key={t.slug}
+                  onClick={() => {
+                    setType(selectedType === t.slug ? undefined : t.slug);
+                    setIsOpen(false); // закриваємо Drawer після вибору
+                  }}
+                  className={`px-4 py-2 rounded-full border transition text-left
+                    ${
+                      selectedType === t.slug
+                        ? "bg-[#5D866C] text-white"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* COUNTRIES */}
             <select
-              className="select select-bordered ml-2"
               value={selectedCountry || ""}
-              onChange={(e) => setCountry(e.target.value || undefined)}
+              onChange={(e) => {
+                setCountry(e.target.value || undefined);
+                setIsOpen(false); // закриваємо Drawer після вибору
+              }}
+              className="px-4 py-2 rounded border bg-white"
             >
               <option value="">Всі країни</option>
               {COUNTRIES.map((c) => (
                 <option key={c.slug} value={c.slug}>
-                  {c.name}
+                  {c.label}
                 </option>
               ))}
             </select>
-          </li>
 
-          {/* Скидання фільтрів */}
-          {(selectedType || selectedCountry) && (
-            <li>
+            {/* RESET */}
+            {(selectedType || selectedCountry) && (
               <button
                 onClick={() => {
                   setType(undefined);
                   setCountry(undefined);
+                  setIsOpen(false);
                 }}
-                className="px-3 py-2 rounded bg-red-200 hover:bg-red-300 font-semibold"
+                className="px-4 py-2 rounded bg-red-200 hover:bg-red-300"
               >
-                Скасувати фільтри
+                Скинути
               </button>
-            </li>
-          )}
-        </ul>
-      </div>
-
-      {/* Права частина навігації */}
-      <div className="navbar-end">
-        <a className="btn">Button</a>
-      </div>
-    </div>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
   );
 };

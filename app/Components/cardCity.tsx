@@ -33,7 +33,7 @@ export const CardCity = ({ city }: Props) => {
         </figure>
 
         <div className="card-body text-center">
-          <h2 className="card-title">{city.Name}</h2>
+          <h2 className="card-title ">{city.Name}</h2>
           <p>{city.typeUa.join(", ")}</p>
           <p>{countryList.join(", ")}</p>
           {formattedDate && (
@@ -42,7 +42,7 @@ export const CardCity = ({ city }: Props) => {
           <Link
             href={`/cities/${city.slug}`}
             target="_blank"
-            className="btn btn-primary"
+            className="btn text-white bg-[#5D866C]"
           >
             Детальніше
           </Link>

@@ -1,7 +1,8 @@
 "use client";
+import "../globals.css";
 export const AboutUs = () => {
   return (
-    <div className="">
+    <div className="bg-[#F5F5F0]  rounded-2xl w-4/5  p-4 m-auto  ">
       <h1>Паломницько турістична фірма « AVE MARIA »</h1>
       <p>
         була заснована в 2017 році і основним напрямком діяльності ми обрали

@@ -1,5 +1,5 @@
 "use client";
-
+import NavLinks from "./navLinks";
 import { useRef, useEffect } from "react";
 import "../../app/globals.css";
 import { City } from "../Components/HomeClient";
@@ -47,6 +47,7 @@ export default function ParalaxHeroSection({
 
   return (
     <div>
+      <NavLinks />
       <section className="hero relative  flex items-center justify-center text-white">
         <div ref={bgBackRef} className="absolute inset-0 bg bg-back" />
         <div ref={bgFrontRef} className="absolute inset-0 bg bg-front" />
@@ -70,8 +71,8 @@ export default function ParalaxHeroSection({
           <CardCityList cities={cities} loading={loading} />
 
           <AboutUs />
-          <ContactSection />
         </div>
+        <ContactSection />
         <Footer />
       </section>
     </div>

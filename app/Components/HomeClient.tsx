@@ -1,4 +1,3 @@
-// app/HomeClient.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,7 +6,6 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 
 import ParalaxHeroSection from "../Components/paralaxHeroSection";
-import NavLinks from "../Components/navLinks";
 
 export interface City {
   id: string;
@@ -93,50 +91,59 @@ export default function HomeClient() {
       return new Date(Number(year), Number(month) - 1, Number(day));
     };
 
-    return allCities
-      .filter((city) =>
-        selectedType ? city.type.includes(selectedType) : true,
-      )
-      .filter((city) =>
-        selectedCountry ? city.CountrySlug.includes(selectedCountry) : true,
-      )
-      .sort((a, b) => {
-        const dateA = a.DateOfBeggining
-          ? parseDate(a.DateOfBeggining)
-          : new Date(9999, 0, 1);
-        const dateB = b.DateOfBeggining
-          ? parseDate(b.DateOfBeggining)
-          : new Date(9999, 0, 1);
-        const diffA =
-          dateA.getFullYear() * 12 +
-          dateA.getMonth() -
-          (currentYear * 12 + currentMonth);
-        const diffB =
-          dateB.getFullYear() * 12 +
-          dateB.getMonth() -
-          (currentYear * 12 + currentMonth);
-        return diffA - diffB;
-      });
+    return (
+      allCities
+        // Фільтр по типу туру
+        .filter((city) =>
+          selectedType ? city.type.includes(selectedType) : true,
+        )
+        // Фільтр по країні
+        .filter((city) =>
+          selectedCountry ? city.CountrySlug.includes(selectedCountry) : true,
+        )
+        // Сортування по найближчій даті від поточного місяця
+        .sort((a, b) => {
+          const dateA = a.DateOfBeggining
+            ? parseDate(a.DateOfBeggining)
+            : new Date(9999, 0, 1);
+          const dateB = b.DateOfBeggining
+            ? parseDate(b.DateOfBeggining)
+            : new Date(9999, 0, 1);
+
+          const diffA =
+            dateA.getFullYear() * 12 +
+            dateA.getMonth() -
+            (currentYear * 12 + currentMonth);
+          const diffB =
+            dateB.getFullYear() * 12 +
+            dateB.getMonth() -
+            (currentYear * 12 + currentMonth);
+
+          return diffA - diffB;
+        })
+    );
   }, [allCities, selectedType, selectedCountry]);
 
-  const updateFilter = (key: string, value?: string) => {
+  // Оновлення фільтрів без втручання в інші параметри
+  const updateFilter = (key: "type" | "country", value?: string) => {
     const params = new URLSearchParams(window.location.search);
     if (value) params.set(key, value);
     else params.delete(key);
     router.push(`?${params.toString()}`, { scroll: false });
+
+    // Локальний state для миттєвого оновлення UI
+    if (key === "type") setSelectedType(value);
+    if (key === "country") setSelectedCountry(value);
   };
 
   return (
-    <>
-      <NavLinks />
-      <ParalaxHeroSection
-        cities={visibleCities}
-        loading={loading}
-        selectedType={selectedType}
-        selectedCountry={selectedCountry}
-        setType={(v) => updateFilter("type", v)}
-        setCountry={(v) => updateFilter("country", v)}
-      />
-    </>
+    <ParalaxHeroSection
+      cities={visibleCities}
+      loading={loading}
+      selectedType={selectedType}
+      selectedCountry={selectedCountry}
+      setType={(v) => updateFilter("type", v)}
+      setCountry={(v) => updateFilter("country", v)}
+    />
   );
 }
