@@ -6,7 +6,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
-import { NavMenu } from "@/app/Components/navMenu";
+// import { NavMenu } from "@/app/Components/navMenu";
 import { Footer } from "@/app/Components/footer";
 
 /* ================= TYPES ================= */
@@ -108,7 +108,7 @@ export default function CityPage() {
     <div>
       <NavLinks />
       {/* Якщо NavMenu має обов'язкові props — зроби їх optional в самому NavMenu */}
-      <NavMenu />
+      {/* <NavMenu /> */}
 
       <div className="max-w-4xl mx-auto p-6 space-y-10">
         {/* TITLE */}
