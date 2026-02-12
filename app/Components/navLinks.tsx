@@ -143,7 +143,7 @@ const NavLinks = () => {
           </li>
         </ul>
         <ul className="flex  flex-row gap-1.5 text-black">
-          <li className="flex items-center ml-1.5 place-items-center ">
+          <li className="flex items-center ml-1.5 place-items-center text-black hover:text-[#5D866C] transition-colors duration-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -158,7 +158,7 @@ const NavLinks = () => {
             </svg>
             050 101 07 42
           </li>
-          <li className="flex items-center place-items-center ml-1.5 ">
+          <li className="flex items-center place-items-center ml-1.5 text-black hover:text-[#5D866C] transition-colors duration-300 ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

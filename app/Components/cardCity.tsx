@@ -28,12 +28,12 @@ export const CardCity = ({ city }: Props) => {
               "https://res.cloudinary.com/dwl1expbx/image/upload/v1770135112/grayFotoCity_a3ccak.jpg"
             }
             alt={city.Name}
-            className="rounded-xl"
+            className="rounded-xl "
           />
         </figure>
 
         <div className="card-body text-center">
-          <h2 className="card-title ">{city.Name}</h2>
+          <h2 className="text-center text-lg font-semibold">{city.Name}</h2>
           <p>{city.typeUa.join(", ")}</p>
           <p>{countryList.join(", ")}</p>
           {formattedDate && (

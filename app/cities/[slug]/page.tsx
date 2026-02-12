@@ -1,76 +1,54 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
-import { NavMenu } from "@/app/Components/navMenu";
+import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
+import { NavMenu } from "@/app/Components/navMenu";
+import { Footer } from "@/app/Components/footer";
 
-/* ===================== TYPES ===================== */
+/* ================= TYPES ================= */
 
 interface City {
   id: string;
-  Name: string;
-  slug: string;
+  Name?: string;
+  slug?: string;
   img1?: string;
   img2?: string;
   img3?: string;
   img4?: string;
+  img5?: string;
   description?: string;
   DateOfBeggining?: string;
   DateOfEnd?: string;
   Route?: string;
   TourPrice?: string;
-  INCLUDES?: string | string[];
+  INCLUDES?: string[];
   NOTINCLUDE?: string[];
-  Country?: string | string[];
-  Day1?: string;
-  Day2?: string;
-  Day3?: string;
-  Day4?: string;
-  Day5?: string;
-  Day6?: string;
-  Day7?: string;
-  Day8?: string;
-  Day9?: string;
-  Day10?: string;
-  Day11?: string;
+  Country?: string[];
   ImportantInfo?: string;
+  [key: string]: any;
 }
 
-/* ===================== HELPERS ===================== */
+/* ================= HELPERS ================= */
 
-const normalizeToArray = (value?: string | string[]) => {
-  if (Array.isArray(value)) return value.filter(Boolean);
-  if (typeof value === "string")
-    return value
-      .split(",")
-      .map((v) => v.trim())
-      .filter(Boolean);
-  return [];
-};
-
-const hasValue = (value?: string) =>
+const hasText = (value?: string | null) =>
   typeof value === "string" && value.trim() !== "";
 
-/* ===================== PAGE ===================== */
+const hasArray = (value?: unknown) => Array.isArray(value) && value.length > 0;
 
-const CityPage = ({
-  selectedType,
-  selectedCountry,
-  setType,
-  setCountry,
-}: {
-  selectedType?: string;
-  selectedCountry?: string;
-  setType: (v?: string) => void;
-  setCountry: (v?: string) => void;
-}) => {
-  const bgBackRef = useRef<HTMLDivElement>(null);
-  const bgFrontRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLHeadingElement>(null);
+/* ================= ANIMATION ================= */
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0 },
+};
+
+/* ================= PAGE ================= */
+
+export default function CityPage() {
   const params = useParams();
   const rawSlug = params.slug;
   const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
@@ -78,40 +56,26 @@ const CityPage = ({
   const [city, setCity] = useState<City | null>(null);
   const [loading, setLoading] = useState(true);
 
-  /* ===================== Паралакс ===================== */
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      if (bgBackRef.current)
-        bgBackRef.current.style.transform = `translateY(${offset * 0.2}px)`;
-      if (bgFrontRef.current)
-        bgFrontRef.current.style.transform = `translateY(${offset * 0.5}px)`;
-      if (textRef.current)
-        textRef.current.style.transform = `translateY(${offset * 0.3}px)`;
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  /* ===== Firestore Query ===== */
 
-  /* ===================== Завантаження даних ===================== */
   useEffect(() => {
     const fetchCity = async () => {
       if (!slug) return;
 
       try {
-        const snapshot = await getDocs(collection(db, "1City"));
-        const citiesData: City[] = snapshot.docs.map(
-          (doc) =>
-            ({
-              id: doc.id,
-              ...doc.data(),
-            }) as City,
-        );
+        const q = query(collection(db, "1City"), where("slug", "==", slug));
+        const snapshot = await getDocs(q);
 
-        const foundCity = citiesData.find((c) => c.slug === slug) || null;
-        setCity(foundCity);
+        if (!snapshot.empty) {
+          setCity({
+            id: snapshot.docs[0].id,
+            ...snapshot.docs[0].data(),
+          } as City);
+        } else {
+          setCity(null);
+        }
       } catch (error) {
-        console.error("Error loading city:", error);
+        console.error(error);
         setCity(null);
       } finally {
         setLoading(false);
@@ -122,135 +86,202 @@ const CityPage = ({
   }, [slug]);
 
   if (loading) return <p className="text-center mt-10">Завантаження...</p>;
+
   if (!city) return <p className="text-center mt-10">Тур не знайдено</p>;
+
+  /* ===== Images ===== */
+
+  const images = [city.img1, city.img2, city.img3, city.img4, city.img5].filter(
+    hasText,
+  );
+
+  /* ===== Days dynamic ===== */
+
+  const days = Object.entries(city)
+    .filter(([key, value]) => key.startsWith("Day") && hasText(value))
+    .sort(
+      ([a], [b]) =>
+        parseInt(a.replace("Day", "")) - parseInt(b.replace("Day", "")),
+    );
 
   return (
     <div>
       <NavLinks />
-      <NavMenu
-        selectedType={selectedType}
-        selectedCountry={selectedCountry}
-        setType={setType}
-        setCountry={setCountry}
-      />
+      {/* Якщо NavMenu має обов'язкові props — зроби їх optional в самому NavMenu */}
+      <NavMenu />
 
-      <div className="max-w-4xl mx-auto p-6">
-        <h1
-          ref={textRef}
-          className="text-3xl text-center text-[#5D866C] font-bold mb-4"
-        >
-          {city.Name}
-        </h1>
-
-        {/* Галерея */}
-        {/* <div className="hover-gallery max-w-60 mb-4 flex flex-wrap gap-2">
-          {normalizeToArray([city.img1, city.img2, city.img3, city.img4]).map(
-            (img: string, idx) => (
-              <img
-                key={idx}
-                src={img}
-                alt={city.Name || "Тур"}
-                className="w-48 h-32 object-cover rounded"
-              />
-            ),
-          )}
-        </div> */}
-
-        {hasValue(city.description) && (
-          <p className="mb-2">{city.description}</p>
+      <div className="max-w-4xl mx-auto p-6 space-y-10">
+        {/* TITLE */}
+        {hasText(city.Name) && (
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-3xl font-bold text-center text-[#5D866C]"
+          >
+            {city.Name}
+          </motion.h1>
         )}
 
-        {/* Дати */}
-        {hasValue(city.DateOfBeggining) && hasValue(city.DateOfEnd) && (
-          <p className="mb-2">
+        {/* DESCRIPTION */}
+        {hasText(city.description) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            {city.description}
+          </motion.div>
+        )}
+
+        {/* DATES */}
+        {hasText(city.DateOfBeggining) && hasText(city.DateOfEnd) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
             <strong>Дати:</strong> {city.DateOfBeggining} – {city.DateOfEnd}
-          </p>
+          </motion.div>
         )}
 
-        {/* Країни */}
-        {normalizeToArray(city.Country).length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-xl font-bold mb-2">Країни туру:</h2>
+        {/* ROUTE */}
+        {hasText(city.Route) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <strong>Маршрут:</strong> {city.Route}
+          </motion.div>
+        )}
+
+        {/* PRICE */}
+        {hasText(city.TourPrice) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <strong>Ціна:</strong> {city.TourPrice}
+          </motion.div>
+        )}
+
+        {/* COUNTRY */}
+        {hasArray(city.Country) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <h2 className="font-bold mb-2">Країни туру:</h2>
             <ul className="list-disc list-inside">
-              {normalizeToArray(city.Country).map((c, i) => (
+              {city.Country!.map((c, i) => (
                 <li key={i}>{c}</li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         )}
 
-        {/* Маршрут */}
-        {hasValue(city.Route) && (
-          <p className="mb-2">
-            <strong>Маршрут:</strong> {city.Route}
-          </p>
-        )}
-
-        {/* Ціна */}
-        {hasValue(city.TourPrice) && (
-          <p className="mb-2">
-            <strong>Ціна:</strong> {city.TourPrice}
-          </p>
-        )}
-
-        {/* Що включено */}
-        {normalizeToArray(city.INCLUDES).length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-xl font-bold mb-2">Що включено в тур:</h2>
+        {/* INCLUDES */}
+        {hasArray(city.INCLUDES) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <h2 className="font-bold mb-2">Що включено:</h2>
             <ul className="list-disc list-inside">
-              {normalizeToArray(city.INCLUDES).map((item, idx) => (
-                <li key={idx}>{item}</li>
+              {city.INCLUDES!.map((item, i) => (
+                <li key={i}>{item}</li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         )}
 
-        {/* Що не включено */}
-        {normalizeToArray(city.NOTINCLUDE).length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-xl font-bold mb-2">Що не включено:</h2>
+        {/* NOT INCLUDE */}
+        {hasArray(city.NOTINCLUDE) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <h2 className="font-bold mb-2">Не включено:</h2>
             <ul className="list-disc list-inside">
-              {normalizeToArray(city.NOTINCLUDE).map((item, idx) => (
-                <li key={idx}>{item}</li>
+              {city.NOTINCLUDE!.map((item, i) => (
+                <li key={i}>{item}</li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         )}
 
-        {/* Маршрут по днях */}
-        <div className="mt-6">
-          <h2 className="text-xl font-bold mb-4">Маршрут по днях:</h2>
-          <div className="space-y-4">
-            {Object.entries(city)
-              .filter(
-                ([key, value]) => key.startsWith("Day") && hasValue(value),
-              )
-              .sort(
-                ([a], [b]) =>
-                  parseInt(a.replace("Day", ""), 10) -
-                  parseInt(b.replace("Day", ""), 10),
-              )
-              .map(([key, value]) => (
-                <div key={key} className="bg-base-100 p-4 rounded shadow-sm">
-                  <h3 className="font-semibold mb-1">
-                    День {key.replace("Day", "")}:
+        {/* DAYS */}
+        {days.length > 0 && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="font-bold mb-4">Маршрут по днях:</h2>
+
+            <div className="space-y-4">
+              {days.map(([key, value]) => (
+                <div
+                  key={key}
+                  className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+                >
+                  <h3 className="font-semibold mb-2">
+                    День {key.replace("Day", "")}
                   </h3>
                   <p>{value}</p>
                 </div>
               ))}
-          </div>
-        </div>
+            </div>
+          </motion.div>
+        )}
 
-        {/* Важлива інформація */}
-        {hasValue(city.ImportantInfo) && (
-          <div className="mt-6 p-4 bg-warning/10 rounded">
+        {/* IMPORTANT INFO */}
+        {hasText(city.ImportantInfo) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-warning/10 rounded"
+          >
             <h2 className="font-bold mb-2">Важлива інформація</h2>
             <p>{city.ImportantInfo}</p>
-          </div>
+          </motion.div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
-};
-
-export default CityPage;
+}

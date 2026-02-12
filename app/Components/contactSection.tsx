@@ -15,39 +15,65 @@ export const ContactSection = () => {
       <aside className="flex flex-col md:flex-row gap-6 text-black">
         <div className="">
           <h2 className="text-2xl font-bold mb-4">Подзвоніть нам:</h2>
-          <p className="mb-2">Email: uasenja@gmail.com</p>
-          <p className="mb-2">Телефон: 050 101 07 42</p>
-          <p className="mb-2">Телефон: 050 237 84 04</p>
-          <p className="mb-2">Телефон: 096 935 5298</p>
+          <p className="mb-2 text-black hover:text-[#E2A16F] transition-colors duration-300">
+            Email: uasenja@gmail.com
+          </p>
+          <p className="mb-2 text-black hover:text-[#E2A16F] transition-colors duration-300">
+            Телефон: 050 101 07 42
+          </p>
+          <p className="mb-2 text-black hover:text-[#E2A16F] transition-colors duration-300">
+            Телефон: 050 237 84 04
+          </p>
+          <p className="mb-2 text-black hover:text-[#E2A16F] transition-colors duration-300">
+            Телефон: 096 935 5298
+          </p>
         </div>
         <div className="">
           <h2 className="text-2xl font-bold mb-4">Напишіть нам:</h2>
           <div className=" gap-2">
             <button type="submit">
-              <a href="http://" target="_blank" rel="noopener noreferrer">
+              <a
+                href="http://"
+                target="_blank"
+                className="text-black hover:text-[#86B0BD] transition-colors duration-300"
+                rel="noopener noreferrer"
+              >
                 Viber
               </a>{" "}
             </button>
             <br />
             <button type="submit">
-              <a href="http://" target="_blank" rel="noopener noreferrer"></a>
+              <a
+                href="https://www.instagram.com/avemaria.palomnyk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                target="_blank"
+                className="text-black hover:text-[#86B0BD] transition-colors duration-300"
+                rel="noopener noreferrer"
+              >
+                Instagram
+              </a>
             </button>
             <br />
-            <button type="submit">WhatsApp</button>
+            <button type="submit">
+              <a
+                href="https://www.instagram.com/avemaria.palomnyk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                target="_blank"
+                className="text-black hover:text-[#86B0BD] transition-colors duration-300"
+                rel="noopener noreferrer"
+              >
+                WhatsApp
+              </a>
+            </button>
             <br />
-            <button>Messenger</button>
-          </div>
-        </div>
-        <div className="">
-          <h2 className="text-2xl font-bold mb-4">Підпишіться на нас:</h2>
-          <div className=" gap-2">
-            <button type="submit">Viber</button>
-            <br />
-            <button type="submit">Telegram</button>
-            <br />
-            <button type="submit">WhatsApp</button>
-            <br />
-            <button>Messenger</button>
+            <button>
+              <a
+                href="https://www.instagram.com/avemaria.palomnyk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                target="_blank"
+                className="text-black hover:text-[#86B0BD] transition-colors duration-300"
+                rel="noopener noreferrer"
+              >
+                Messenger
+              </a>
+            </button>
           </div>
         </div>
       </aside>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const TYPES = [
   { slug: "pilgrimage", label: "Паломництва" },
@@ -14,6 +15,8 @@ const COUNTRIES = [
   { slug: "hungary", label: "Угорщина" },
   { slug: "france", label: "Франція" },
   { slug: "israel", label: "Ізраїль" },
+  { slug: "georgia", label: "Грузія" },
+  { slug: "greece", label: "Греція" },
 ];
 
 interface Props {
@@ -35,7 +38,10 @@ export const NavMenu = ({
     <nav className="sticky top-0 z-50 bg-[#E6D8C3] border-b">
       <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Логотип або заголовок */}
-        <div className="text-xl font-bold">AVE MARIA</div>
+        <div className="text-xl font-bold">
+          {" "}
+          <Link href="/">AVE MARIA</Link>
+        </div>
 
         {/* Гамбургер кнопка для мобільних */}
         <button
