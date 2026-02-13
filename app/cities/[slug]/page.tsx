@@ -6,7 +6,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
-// import { NavMenu } from "@/app/Components/navMenu";
+import { NavMenu } from "@/app/Components/navMenu";
 import { Footer } from "@/app/Components/footer";
 
 /* ================= TYPES ================= */
@@ -108,7 +108,7 @@ export default function CityPage() {
     <div>
       <NavLinks />
       {/* Якщо NavMenu має обов'язкові props — зроби їх optional в самому NavMenu */}
-      {/* <NavMenu /> */}
+      <NavMenu />
 
       <div className="max-w-4xl mx-auto p-6 space-y-10">
         {/* TITLE */}
@@ -125,80 +125,78 @@ export default function CityPage() {
           </motion.h1>
         )}
 
-        {/* DESCRIPTION */}
-        {hasText(city.description) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            {city.description}
-          </motion.div>
-        )}
+        <div className="flex flex-col lg:flex-row gap-6 max-w-4xl mx-auto px-4">
+          <div className="carousel carousel-vertical rounded-box w-full h-64 sm:h-80 lg:h-[500px] lg:w-2/5">
+            {images.slice(0, 3).map((img, i) => (
+              <div key={i} className="carousel-item h-full">
+                <img src={img} alt="" className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
 
-        {/* DATES */}
-        {hasText(city.DateOfBeggining) && hasText(city.DateOfEnd) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            <strong>Дати:</strong> {city.DateOfBeggining} – {city.DateOfEnd}
-          </motion.div>
-        )}
+          <div className=" flex flex-col gap-2.5 max-w-96 mx-auto">
+            {/* DATES */}
+            {hasText(city.DateOfBeggining) && hasText(city.DateOfEnd) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+              >
+                <strong>Дати:</strong> {city.DateOfBeggining} – {city.DateOfEnd}
+              </motion.div>
+            )}
 
-        {/* ROUTE */}
-        {hasText(city.Route) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            <strong>Маршрут:</strong> {city.Route}
-          </motion.div>
-        )}
+            {/* ROUTE */}
+            {hasText(city.Route) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+              >
+                <strong>Маршрут:</strong> {city.Route}
+              </motion.div>
+            )}
 
-        {/* PRICE */}
-        {hasText(city.TourPrice) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            <strong>Ціна:</strong> {city.TourPrice}
-          </motion.div>
-        )}
+            {/* PRICE */}
+            {hasText(city.TourPrice) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+              >
+                <strong>Ціна:</strong> {city.TourPrice}
+              </motion.div>
+            )}
 
-        {/* COUNTRY */}
-        {hasArray(city.Country) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            <h2 className="font-bold mb-2">Країни туру:</h2>
-            <ul className="list-disc list-inside">
-              {city.Country!.map((c, i) => (
-                <li key={i}>{c}</li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
+            {/* COUNTRY */}
+            {hasArray(city.Country) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+              >
+                <h2 className="font-bold mb-2">Країни туру:</h2>
+                <ul className="list-disc list-inside">
+                  {city.Country!.map((c, i) => (
+                    <li key={i}>{c}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+          </div>
+        </div>
 
         {/* INCLUDES */}
         {hasArray(city.INCLUDES) && (
@@ -235,6 +233,20 @@ export default function CityPage() {
                 <li key={i}>{item}</li>
               ))}
             </ul>
+          </motion.div>
+        )}
+
+        {/* DESCRIPTION */}
+        {hasText(city.description) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            {city.description}
           </motion.div>
         )}
 
