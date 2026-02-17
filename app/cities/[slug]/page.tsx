@@ -7,6 +7,7 @@ import { db } from "../../firebase/config";
 import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
 import { NavMenu } from "@/app/Components/navMenu";
+import { TourTable } from "@/app/Components/TourTable";
 import { Footer } from "@/app/Components/footer";
 
 /* ================= TYPES ================= */
@@ -197,7 +198,7 @@ export default function CityPage() {
             )}
           </div>
         </div>
-
+        <TourTable citySlug={city.slug!} />
         {/* INCLUDES */}
         {hasArray(city.INCLUDES) && (
           <motion.div
