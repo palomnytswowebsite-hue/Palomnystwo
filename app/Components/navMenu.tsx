@@ -12,11 +12,16 @@ const TYPES = [
 
 const COUNTRIES = [
   { slug: "italy", label: "Італія" },
-  { slug: "hungary", label: "Угорщина" },
+  { slug: "turkey", label: "Туреччина" },
   { slug: "france", label: "Франція" },
   { slug: "israel", label: "Ізраїль" },
   { slug: "georgia", label: "Грузія" },
   { slug: "greece", label: "Греція" },
+];
+
+const POPULAR_COUNTRIES = [
+  { slug: "bosnia", label: "Меджугор'є" },
+  { slug: "hungary", label: "Угорщина" },
 ];
 
 interface Props {
@@ -49,7 +54,10 @@ export const NavMenu = ({
         </button>
 
         <div className="hidden md:flex gap-4 items-center">
-          {TYPES.map((t) => (
+          {/* Типи (без Пригоди та Екскурсії) */}
+          {TYPES.filter(
+            (t) => t.slug !== "adventure" && t.slug !== "excursion",
+          ).map((t) => (
             <button
               key={t.slug}
               onClick={() =>
@@ -66,6 +74,25 @@ export const NavMenu = ({
             </button>
           ))}
 
+          {/* Популярні країни */}
+          {POPULAR_COUNTRIES.map((c) => (
+            <button
+              key={c.slug}
+              onClick={() =>
+                setCountry?.(selectedCountry === c.slug ? undefined : c.slug)
+              }
+              className={`px-4 py-2 rounded-full border transition
+                ${
+                  selectedCountry === c.slug
+                    ? "bg-[#86B0BD] text-white"
+                    : "bg-white hover:bg-gray-100"
+                }`}
+            >
+              ⭐ {c.label}
+            </button>
+          ))}
+
+          {/* Select інших країн */}
           <select
             value={selectedCountry || ""}
             onChange={(e) => setCountry?.(e.target.value || undefined)}
@@ -79,6 +106,7 @@ export const NavMenu = ({
             ))}
           </select>
 
+          {/* Кнопка скидання */}
           {(selectedType || selectedCountry) && (
             <button
               onClick={() => {

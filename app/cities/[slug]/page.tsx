@@ -21,15 +21,18 @@ interface City {
   img3?: string;
   img4?: string;
   img5?: string;
+  Confession?: string[];
   description?: string;
   DateOfBeggining?: string;
   DateOfEnd?: string;
+  Duration?: string;
   Route?: string;
   TourPrice?: string;
   INCLUDES?: string[];
   NOTINCLUDE?: string[];
   Country?: string[];
   ImportantInfo?: string;
+  typeUa?: string[];
   [key: string]: any;
 }
 
@@ -147,6 +150,55 @@ export default function CityPage() {
                 className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
               >
                 <strong>Дати:</strong> {city.DateOfBeggining} – {city.DateOfEnd}
+              </motion.div>
+            )}
+            {/* DURATION */}
+            {hasText(city.Duration) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+              >
+                <strong>Тривалість:</strong> {city.Duration}
+              </motion.div>
+            )}
+            {/* TYPE */}
+            {hasArray(city.typeUa) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+              >
+                <strong>Тип туру:</strong>
+                <ul className="list-disc list-inside mt-2">
+                  {city.typeUa!.map((type, i) => (
+                    <li key={i}>{type}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+            {/* CONFESSION */}
+            {hasArray(city.Confession) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+              >
+                <strong>Тип конфесії:</strong>
+                <ul>
+                  {city.Confession!.map((type, i) => (
+                    <li key={i}>{type}</li>
+                  ))}
+                </ul>
               </motion.div>
             )}
 

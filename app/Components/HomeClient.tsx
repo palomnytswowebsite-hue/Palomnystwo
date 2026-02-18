@@ -93,19 +93,35 @@ export default function HomeClient() {
 
     return (
       allCities
-        // Фільтр по типу туру
+        // Фільтр по типу
         .filter((city) =>
           selectedType ? city.type.includes(selectedType) : true,
         )
-        // Фільтр по країні
-        .filter((city) =>
-          selectedCountry ? city.CountrySlug.includes(selectedCountry) : true,
-        )
-        // Сортування по найближчій даті від поточного місяця
+
+        // 🔥 ФІКС ФІЛЬТРУ КРАЇНИ (нічого не видаляємо)
+        .filter((city) => {
+          if (!selectedCountry) return true;
+
+          // Перевірка по CountrySlug
+          if (city.CountrySlug.includes(selectedCountry)) return true;
+
+          // Додаткова перевірка по назві країни
+          if (
+            city.Country.some((c) =>
+              c.toLowerCase().includes(selectedCountry.toLowerCase()),
+            )
+          )
+            return true;
+
+          return false;
+        })
+
+        // Сортування
         .sort((a, b) => {
           const dateA = a.DateOfBeggining
             ? parseDate(a.DateOfBeggining)
             : new Date(9999, 0, 1);
+
           const dateB = b.DateOfBeggining
             ? parseDate(b.DateOfBeggining)
             : new Date(9999, 0, 1);
@@ -114,6 +130,7 @@ export default function HomeClient() {
             dateA.getFullYear() * 12 +
             dateA.getMonth() -
             (currentYear * 12 + currentMonth);
+
           const diffB =
             dateB.getFullYear() * 12 +
             dateB.getMonth() -
@@ -124,14 +141,14 @@ export default function HomeClient() {
     );
   }, [allCities, selectedType, selectedCountry]);
 
-  // Оновлення фільтрів без втручання в інші параметри
   const updateFilter = (key: "type" | "country", value?: string) => {
     const params = new URLSearchParams(window.location.search);
+
     if (value) params.set(key, value);
     else params.delete(key);
+
     router.push(`?${params.toString()}`, { scroll: false });
 
-    // Локальний state для миттєвого оновлення UI
     if (key === "type") setSelectedType(value);
     if (key === "country") setSelectedCountry(value);
   };
