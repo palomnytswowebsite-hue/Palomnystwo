@@ -1,5 +1,5 @@
 "use client";
-
+import "../globals.css";
 import Link from "next/link";
 import { City } from "../Components/HomeClient";
 
@@ -19,7 +19,7 @@ export const CardCity = ({ city }: Props) => {
     : "";
 
   return (
-    <div className="w-full sm:w-96">
+    <div className=" sm:w-96">
       <div className="card bg-white shadow">
         <figure className="px-10 pt-10">
           <img

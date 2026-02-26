@@ -5,9 +5,7 @@ import Link from "next/link";
 
 const TYPES = [
   { slug: "pilgrimage", label: "Паломництва" },
-  { slug: "excursion", label: "Екскурсії" },
-  { slug: "adventure", label: "Пригоди" },
-  { slug: "sea", label: "Море" },
+  { slug: "thermals", label: "Термали" },
 ];
 
 const COUNTRIES = [
@@ -17,11 +15,6 @@ const COUNTRIES = [
   { slug: "israel", label: "Ізраїль" },
   { slug: "georgia", label: "Грузія" },
   { slug: "greece", label: "Греція" },
-];
-
-const POPULAR_COUNTRIES = [
-  { slug: "bosnia", label: "Меджугор'є" },
-  { slug: "hungary", label: "Угорщина" },
 ];
 
 interface Props {
@@ -48,13 +41,40 @@ export const NavMenu = ({
 
         <button
           className="md:hidden px-3 py-2 border rounded"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen(true)}
         >
-          {isOpen ? "✕" : "☰"}
+          ☰
         </button>
 
+        {/* Desktop */}
         <div className="hidden md:flex gap-4 items-center">
-          {/* Типи (без Пригоди та Екскурсії) */}
+          {/* Сторінки */}
+          <Link href="/" className="px-4 py-2 hover:text-[#ffffff] transition">
+            Головна
+          </Link>
+
+          <Link
+            href="/about"
+            className="px-4 py-2 hover:text-[#ffffff] transition"
+          >
+            Про нас
+          </Link>
+
+          <Link
+            href="/reviews"
+            className="px-4 py-2 hover:text-[#ffffff] transition"
+          >
+            Відгуки
+          </Link>
+
+          <Link
+            href="/contacts"
+            className="px-4 py-2 hover:text-[#ffffff] transition"
+          >
+            Контакти
+          </Link>
+
+          {/* Фільтр типів */}
           {TYPES.filter(
             (t) => t.slug !== "adventure" && t.slug !== "excursion",
           ).map((t) => (
@@ -63,36 +83,18 @@ export const NavMenu = ({
               onClick={() =>
                 setType?.(selectedType === t.slug ? undefined : t.slug)
               }
-              className={`px-4 py-2 rounded-full border transition
+              className={` transition
                 ${
                   selectedType === t.slug
-                    ? "bg-[#5D866C] text-white"
-                    : "bg-white hover:bg-gray-100"
+                    ? " text-white"
+                    : " hover:text-shadow-amber-300"
                 }`}
             >
               {t.label}
             </button>
           ))}
 
-          {/* Популярні країни */}
-          {POPULAR_COUNTRIES.map((c) => (
-            <button
-              key={c.slug}
-              onClick={() =>
-                setCountry?.(selectedCountry === c.slug ? undefined : c.slug)
-              }
-              className={`px-4 py-2 rounded-full border transition
-                ${
-                  selectedCountry === c.slug
-                    ? "bg-[#86B0BD] text-white"
-                    : "bg-white hover:bg-gray-100"
-                }`}
-            >
-              ⭐ {c.label}
-            </button>
-          ))}
-
-          {/* Select інших країн */}
+          {/* Вибір країни */}
           <select
             value={selectedCountry || ""}
             onChange={(e) => setCountry?.(e.target.value || undefined)}
@@ -106,7 +108,6 @@ export const NavMenu = ({
             ))}
           </select>
 
-          {/* Кнопка скидання */}
           {(selectedType || selectedCountry) && (
             <button
               onClick={() => {
@@ -118,6 +119,90 @@ export const NavMenu = ({
               Скинути
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 md:hidden
+          ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      {/* Drawer */}
+      <div
+        className={`fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-lg
+          transform transition-transform duration-300 ease-in-out md:hidden
+          ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      >
+        <div className="p-4 space-y-4">
+          <button
+            className="mb-4 text-right w-full"
+            onClick={() => setIsOpen(false)}
+          >
+            ✕
+          </button>
+
+          <Link
+            href="/"
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-2 rounded bg-gray-50"
+          >
+            Головна
+          </Link>
+
+          <Link
+            href="/about"
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-2 rounded bg-gray-50"
+          >
+            Про нас
+          </Link>
+
+          <Link
+            href="/reviews"
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-2 rounded bg-gray-50"
+          >
+            Відгуки
+          </Link>
+
+          <Link
+            href="/contacts"
+            onClick={() => setIsOpen(false)}
+            className="block px-4 py-2 rounded bg-gray-50"
+          >
+            Контакти
+          </Link>
+
+          {TYPES.map((t) => (
+            <button
+              key={t.slug}
+              onClick={() => {
+                setType?.(selectedType === t.slug ? undefined : t.slug);
+                setIsOpen(false);
+              }}
+              className="block w-full text-left px-4 py-2 rounded border bg-gray-50"
+            >
+              {t.label}
+            </button>
+          ))}
+
+          <select
+            value={selectedCountry || ""}
+            onChange={(e) => {
+              setCountry?.(e.target.value || undefined);
+              setIsOpen(false);
+            }}
+            className="w-full px-4 py-2 rounded border"
+          >
+            <option value="">Всі країни</option>
+            {COUNTRIES.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </nav>

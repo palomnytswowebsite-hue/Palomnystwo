@@ -5,7 +5,6 @@ import "../../app/globals.css";
 import { City } from "../Components/HomeClient";
 import { NavMenu } from "./navMenu";
 import { CardCityList } from "./CardCityList";
-import { AboutUs } from "./aboutUs";
 import { ContactSection } from "./contactSection";
 import { Footer } from "./footer";
 
@@ -69,8 +68,6 @@ export default function ParalaxHeroSection({
         />
         <div className="px-4 md:px-10">
           <CardCityList cities={cities} loading={loading} />
-
-          <AboutUs />
         </div>
         <ContactSection />
         <Footer />
