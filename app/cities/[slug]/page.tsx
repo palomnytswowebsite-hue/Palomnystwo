@@ -7,6 +7,7 @@ import { db } from "../../firebase/config";
 import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
 import { NavMenu } from "@/app/Components/navMenu";
+import Loader from "@/app/Components/Loader";
 import { TourTable } from "@/app/Components/TourTable";
 import { Footer } from "@/app/Components/footer";
 
@@ -89,7 +90,12 @@ export default function CityPage() {
     fetchCity();
   }, [slug]);
 
-  if (loading) return <p className="text-center mt-10">Завантаження...</p>;
+  if (loading)
+    return (
+      <div className="flex justify-center mt-10">
+        <Loader />
+      </div>
+    );
 
   if (!city) return <p className="text-center mt-10">Тур не знайдено</p>;
 
@@ -128,14 +134,17 @@ export default function CityPage() {
             {city.Name}
           </motion.h1>
         )}
-
         <div className="flex flex-col lg:flex-row gap-6 max-w-4xl mx-auto px-4">
           <div className="carousel carousel-vertical rounded-box w-full h-64 sm:h-80 lg:h-[500px] lg:w-2/5">
-            {images.slice(0, 3).map((img, i) => (
-              <div key={i} className="carousel-item h-full">
-                <img src={img} alt="" className="w-full h-full object-cover" />
+            {images[0] && (
+              <div className="carousel-item h-full">
+                <img
+                  src={images[0]}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
-            ))}
+            )}
           </div>
 
           <div className=" flex flex-col gap-2.5 max-w-96 mx-auto">
@@ -250,45 +259,6 @@ export default function CityPage() {
             )}
           </div>
         </div>
-        <TourTable citySlug={city.slug!} />
-        {/* INCLUDES */}
-        {hasArray(city.INCLUDES) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            <h2 className="font-bold mb-2">Що включено:</h2>
-            <ul className="list-disc list-inside">
-              {city.INCLUDES!.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-
-        {/* NOT INCLUDE */}
-        {hasArray(city.NOTINCLUDE) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            <h2 className="font-bold mb-2">Не включено:</h2>
-            <ul className="list-disc list-inside">
-              {city.NOTINCLUDE!.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-
         {/* DESCRIPTION */}
         {hasText(city.description) && (
           <motion.div
@@ -302,7 +272,7 @@ export default function CityPage() {
             {city.description}
           </motion.div>
         )}
-
+        <TourTable citySlug={city.slug!} />
         {/* DAYS */}
         {days.length > 0 && (
           <motion.div
@@ -312,24 +282,72 @@ export default function CityPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="font-bold mb-4">Маршрут по днях:</h2>
+            <h2 className="font-bold mb-4 p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md">
+              План туру:
+            </h2>
 
             <div className="space-y-4">
-              {days.map(([key, value]) => (
-                <div
-                  key={key}
-                  className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-                >
-                  <h3 className="font-semibold mb-2">
-                    День {key.replace("Day", "")}
-                  </h3>
-                  <p>{value}</p>
+              {days.map(([key, value], i) => (
+                <div key={key} className="space-y-4">
+                  {/* DAY */}
+                  <div className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md">
+                    <h3 className="font-semibold mb-2">
+                      День {key.replace("Day", "")}
+                    </h3>
+                    <p>{value}</p>
+                  </div>
+
+                  {/* IMAGE after day */}
+                  {images[i] && (
+                    <div className="rounded overflow-hidden shadow-md">
+                      <img
+                        src={images[i]}
+                        alt={`Day ${i + 1}`}
+                        className="w-full h-96 object-cover"
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           </motion.div>
+        )}{" "}
+        {/* INCLUDES */}
+        {hasArray(city.INCLUDES) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <h2 className="font-bold mb-2">В вартість туру входить:</h2>
+            <ul className="list-disc list-inside">
+              {city.INCLUDES!.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </motion.div>
         )}
-
+        {/* NOT INCLUDE */}
+        {hasArray(city.NOTINCLUDE) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <h2 className="font-bold mb-2">В вартість туру не входить:</h2>
+            <ul className="list-disc list-inside">
+              {city.NOTINCLUDE!.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
         {/* IMPORTANT INFO */}
         {hasText(city.ImportantInfo) && (
           <motion.div

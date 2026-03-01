@@ -7,6 +7,10 @@ body {
   color: black;
 }
 
+li {
+  list-style-type: none;
+}
+
 .site-background {
   min-height: 100vh;
   background-image: url("https://res.cloudinary.com/dwl1expbx/image/upload/v1772019667/thick-forest-2880x1800-14776_pv2ywv.jpg");
