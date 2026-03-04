@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { motion } from "framer-motion";
 
@@ -14,7 +14,7 @@ interface TableRow {
 }
 
 interface Props {
-  citySlug: string; // тепер передаємо slug
+  cityId: string;
 }
 
 const fadeUp = {
@@ -22,61 +22,50 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
-export function TourTable({ citySlug }: Props) {
+export function TourTable({ cityId }: Props) {
   const [rows, setRows] = useState<TableRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!citySlug) return;
+    if (!cityId) return;
 
-    const fetchData = async () => {
+    const fetchTable = async () => {
       try {
-        // 1️⃣ Знаходимо документ за slug
-        const cityQuery = query(
-          collection(db, "1City"),
-          where("slug", "==", citySlug),
-        );
-        const citySnapshot = await getDocs(cityQuery);
+        console.log("City ID:", cityId);
 
-        if (citySnapshot.empty) {
-          setRows([]);
-          setLoading(false);
-          return;
-        }
+        const tableRef = collection(db, "1City", cityId, "TableRow");
+        const snapshot = await getDocs(tableRef);
 
-        const cityDocId = citySnapshot.docs[0].id;
+        console.log("TableRow snapshot:", snapshot.docs);
 
-        // 2️⃣ Тягнемо TableRow для цього documentId
-        const tableRef = collection(db, "1City", cityDocId, "TableRow");
-        const tableSnapshot = await getDocs(tableRef);
-
-        const data: TableRow[] = tableSnapshot.docs.map((doc) => {
+        const data: TableRow[] = snapshot.docs.map((doc) => {
           const d = doc.data();
           return {
             id: doc.id,
-            date: (d.date as string) ?? "—",
-            adultPrice: (d.adultPrice as string) ?? "—",
-            child5Price: (d.child5Price as string) ?? "—",
-            child10Price: (d.child10Price as string) ?? "—",
+            date: d.date ?? "—",
+            adultPrice: d.adultPrice ?? "—",
+            child5Price: d.child5Price ?? "—",
+            child10Price: d.child10Price ?? "—",
           };
         });
 
         setRows(data);
       } catch (error) {
-        console.error("Помилка при отриманні таблиці:", error);
+        console.error("Помилка отримання TableRow:", error);
         setRows([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [citySlug]);
+    fetchTable();
+  }, [cityId]);
 
   if (loading)
     return <p className="text-center mt-6">Завантаження таблиці...</p>;
 
-  if (!rows.length) return null;
+  if (!rows.length)
+    return <p className="text-center mt-6">Немає даних турів.</p>;
 
   return (
     <motion.section
@@ -101,7 +90,6 @@ export function TourTable({ citySlug }: Props) {
               <th>Діти до 10 р.</th>
             </tr>
           </thead>
-
           <tbody>
             {rows.map((row) => (
               <tr key={row.id} className="hover">

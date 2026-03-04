@@ -54,7 +54,14 @@ export default function ParalaxHeroSection({
           className="flex flex-col items-center text-6xl relative z-10"
           ref={textRef}
         >
-          <div className="text-6xl mb-2">&#x26AA;</div>
+          <div>
+            <img
+              className="rounded-[120px]
+                h-64 w-64 mb-2"
+              src="https://res.cloudinary.com/dwl1expbx/image/upload/v1772635040/photo_2026-03-04_14-51-37_ldm75f.jpg"
+              alt=""
+            />
+          </div>
           AVE MARIA
         </h1>
       </section>

@@ -1,145 +1,191 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
-
 import ParalaxHeroSection from "../Components/paralaxHeroSection";
+
+/* ================= TYPES ================= */
 
 export interface City {
   id: string;
   Name: string;
   slug: string;
   img1?: string;
+
   Country: string[];
   CountrySlug: string[];
+
   type: string[];
   typeUa: string[];
-  DateOfBeggining: string;
+
+  chatInfo: string[]; // ✅ виправлено
+
+  DateOfBeggining?: string;
+  DateOfEnd?: string;
+
+  tableRows?: { date?: string }[];
+
+  allDates?: { label: string; value: number }[];
+  nearestDate?: string;
+  nearestDateValue?: number;
 }
 
-export default function HomeClient() {
-  const router = useRouter();
+/* ================= DATE HELPERS ================= */
 
+const parseSingleDate = (value?: string): Date | null => {
+  if (!value) return null;
+
+  const [day, month, year] = value.split(".");
+  if (!day || !month || !year) return null;
+
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  return isNaN(date.getTime()) ? null : date;
+};
+
+const parseRangeDate = (value?: string): Date | null => {
+  if (!value) return null;
+
+  if (!value.includes("-")) return parseSingleDate(value);
+
+  const [startPart] = value.split("-").map((v) => v.trim());
+  return parseSingleDate(startPart);
+};
+
+/* ================= COMPONENT ================= */
+
+export default function HomeClient() {
   const [allCities, setAllCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [selectedType, setSelectedType] = useState<string | undefined>();
   const [selectedCountry, setSelectedCountry] = useState<string | undefined>();
 
-  // Парсим search params на клієнті
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setSelectedType(params.get("type") || undefined);
-    setSelectedCountry(params.get("country") || undefined);
-  }, []);
+  /* ================= FETCH DATA ================= */
 
-  /* ========== FETCH DATA ========== */
   useEffect(() => {
     const fetchCities = async () => {
       setLoading(true);
-      const snapshot = await getDocs(collection(db, "1City"));
 
-      const data: City[] = snapshot.docs.map((doc) => {
-        const raw = doc.data();
+      try {
+        const snapshot = await getDocs(collection(db, "Cities"));
+        const now = new Date();
 
-        return {
-          id: doc.id,
-          Name: raw.Name,
-          slug: raw.slug,
-          img1: raw.img1 ?? "",
-          DateOfBeggining: raw.DateOfBeggining,
+        const cities: City[] = snapshot.docs.map((doc) => {
+          const raw = doc.data();
 
-          Country: Array.isArray(raw.Country)
-            ? raw.Country
-            : raw.Country
-              ? [raw.Country]
-              : [],
+          const allDates: { label: string; value: number }[] = [];
 
-          CountrySlug: Array.isArray(raw.CountrySlug)
-            ? raw.CountrySlug
-            : raw.CountrySlug
-              ? [raw.CountrySlug]
-              : [],
+          // 🔹 Основна дата
+          if (raw.DateOfBeggining && raw.DateOfEnd) {
+            const startDate = parseSingleDate(raw.DateOfBeggining);
+            if (startDate) {
+              allDates.push({
+                label: `${raw.DateOfBeggining} - ${raw.DateOfEnd}`,
+                value: startDate.getTime(),
+              });
+            }
+          }
 
-          type: Array.isArray(raw.type) ? raw.type : raw.type ? [raw.type] : [],
+          // 🔹 Дати з таблиці
+          if (Array.isArray(raw.tableRows)) {
+            raw.tableRows.forEach((row: { date?: string }) => {
+              const date = parseRangeDate(row.date);
+              if (date) {
+                allDates.push({
+                  label: row.date || "",
+                  value: date.getTime(),
+                });
+              }
+            });
+          }
 
-          typeUa: Array.isArray(raw.typeUa)
-            ? raw.typeUa
-            : raw.typeUa
-              ? [raw.typeUa]
-              : [],
-        };
-      });
+          // 🔹 Знаходимо найближчу дату
+          const futureDates = allDates.filter((d) => d.value >= now.getTime());
 
-      setAllCities(data);
-      setLoading(false);
+          const nearest = futureDates.sort((a, b) => a.value - b.value)[0];
+
+          return {
+            id: doc.id,
+            Name: raw.Name ?? "",
+            slug: raw.slug ?? "",
+            img1: raw.img1 ?? "",
+
+            Country: Array.isArray(raw.Country)
+              ? raw.Country
+              : raw.Country
+                ? [raw.Country]
+                : [],
+
+            CountrySlug: Array.isArray(raw.CountrySlug)
+              ? raw.CountrySlug
+              : raw.CountrySlug
+                ? [raw.CountrySlug]
+                : [],
+
+            type: Array.isArray(raw.type)
+              ? raw.type
+              : raw.type
+                ? [raw.type]
+                : [],
+
+            typeUa: Array.isArray(raw.typeUa)
+              ? raw.typeUa
+              : raw.typeUa
+                ? [raw.typeUa]
+                : [],
+
+            chatInfo: Array.isArray(raw.chatInfo)
+              ? raw.chatInfo
+              : raw.chatInfo
+                ? [raw.chatInfo]
+                : [],
+
+            DateOfBeggining: raw.DateOfBeggining,
+            DateOfEnd: raw.DateOfEnd,
+            tableRows: raw.tableRows ?? [],
+
+            allDates,
+            nearestDate: nearest?.label,
+            nearestDateValue: nearest?.value,
+          };
+        });
+
+        setAllCities(cities);
+      } catch (error) {
+        console.error("Помилка завантаження міст:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCities();
   }, []);
 
-  /* ========== FILTER + SORT ========== */
+  /* ================= FILTER ================= */
+
   const visibleCities = useMemo(() => {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
+    return allCities
+      .filter((city) => {
+        const typeOk = selectedType ? city.type.includes(selectedType) : true;
 
-    const parseDate = (d: string) => {
-      const [day, month, year] = d.split(".");
-      return new Date(Number(year), Number(month) - 1, Number(day));
-    };
+        const countryOk =
+          !selectedCountry ||
+          city.CountrySlug.includes(selectedCountry) ||
+          city.Country.some((c) =>
+            c.toLowerCase().includes(selectedCountry.toLowerCase()),
+          );
 
-    return (
-      allCities
-        // Фільтр по типу
-        .filter((city) =>
-          selectedType ? city.type.includes(selectedType) : true,
-        )
-
-        // 🔥 ФІКС ФІЛЬТРУ КРАЇНИ (нічого не видаляємо)
-        .filter((city) => {
-          if (!selectedCountry) return true;
-
-          // Перевірка по CountrySlug
-          if (city.CountrySlug.includes(selectedCountry)) return true;
-
-          // Додаткова перевірка по назві країни
-          if (
-            city.Country.some((c) =>
-              c.toLowerCase().includes(selectedCountry.toLowerCase()),
-            )
-          )
-            return true;
-
-          return false;
-        })
-
-        // Сортування
-        .sort((a, b) => {
-          const dateA = a.DateOfBeggining
-            ? parseDate(a.DateOfBeggining)
-            : new Date(9999, 0, 1);
-
-          const dateB = b.DateOfBeggining
-            ? parseDate(b.DateOfBeggining)
-            : new Date(9999, 0, 1);
-
-          const diffA =
-            dateA.getFullYear() * 12 +
-            dateA.getMonth() -
-            (currentYear * 12 + currentMonth);
-
-          const diffB =
-            dateB.getFullYear() * 12 +
-            dateB.getMonth() -
-            (currentYear * 12 + currentMonth);
-
-          return diffA - diffB;
-        })
-    );
+        return typeOk && countryOk;
+      })
+      .sort(
+        (a, b) =>
+          (a.nearestDateValue ?? Number.MAX_SAFE_INTEGER) -
+          (b.nearestDateValue ?? Number.MAX_SAFE_INTEGER),
+      );
   }, [allCities, selectedType, selectedCountry]);
+
+  /* ================= URL FILTER ================= */
 
   const updateFilter = (key: "type" | "country", value?: string) => {
     const params = new URLSearchParams(window.location.search);
@@ -147,11 +193,13 @@ export default function HomeClient() {
     if (value) params.set(key, value);
     else params.delete(key);
 
-    router.push(`?${params.toString()}`, { scroll: false });
+    window.history.replaceState({}, "", `?${params.toString()}`);
 
     if (key === "type") setSelectedType(value);
     if (key === "country") setSelectedCountry(value);
   };
+
+  /* ================= RENDER ================= */
 
   return (
     <ParalaxHeroSection

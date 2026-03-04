@@ -54,7 +54,7 @@ export const NavMenu = ({
           </Link>
 
           <Link
-            href="/about"
+            href="/aboutUs"
             className="px-4 py-2 hover:text-[#ffffff] transition"
           >
             Про нас
