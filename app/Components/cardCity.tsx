@@ -32,6 +32,7 @@ export const CardCity = ({ city }: Props) => {
               Найближча дата: {city.nearestDate}
             </p>
           )}
+
           {typeList.length > 0 && <p>{typeList.join(", ")}</p>}
           {countryList.length > 0 && <p>{countryList.join(", ")}</p>}
 

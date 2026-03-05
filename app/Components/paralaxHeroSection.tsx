@@ -6,6 +6,7 @@ import { City } from "../Components/HomeClient";
 import { NavMenu } from "./navMenu";
 import { CardCityList } from "./CardCityList";
 import { ContactSection } from "./contactSection";
+import { FAB } from "./FAB";
 import { Footer } from "./footer";
 
 interface Props {
@@ -77,6 +78,7 @@ export default function ParalaxHeroSection({
           <CardCityList cities={cities} loading={loading} />
         </div>
         <ContactSection />
+        <FAB />
         <Footer />
       </section>
     </div>

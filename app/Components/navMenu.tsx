@@ -6,6 +6,7 @@ import Link from "next/link";
 const TYPES = [
   { slug: "pilgrimage", label: "Паломництва" },
   { slug: "thermals", label: "Термали" },
+  { slug: "sea", label: "Море" },
 ];
 
 const COUNTRIES = [
@@ -34,11 +35,7 @@ export const NavMenu = ({
 
   return (
     <nav className="sticky top-0 z-50 bg-[#E6D8C3] border-b">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="text-xl font-bold">
-          <Link href="/">AVE MARIA</Link>
-        </div>
-
+      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-center">
         <button
           className="md:hidden px-3 py-2 border rounded"
           onClick={() => setIsOpen(true)}
@@ -61,14 +58,17 @@ export const NavMenu = ({
           </Link>
 
           <Link
-            href="/reviews"
+            href="/gallery"
             className="px-4 py-2 hover:text-[#ffffff] transition"
           >
-            Відгуки
+            Галерея
           </Link>
 
+          <Link className="px-4 py-2 hover:text-[#ffffff] transition" href="">
+            Цікаве
+          </Link>
           <Link
-            href="/contacts"
+            href="/contactUs"
             className="px-4 py-2 hover:text-[#ffffff] transition"
           >
             Контакти
@@ -83,12 +83,9 @@ export const NavMenu = ({
               onClick={() =>
                 setType?.(selectedType === t.slug ? undefined : t.slug)
               }
-              className={` transition
-                ${
-                  selectedType === t.slug
-                    ? " text-white"
-                    : " hover:text-shadow-amber-300"
-                }`}
+              className={`transition m-2.5
+        ${selectedType === t.slug ? "text-white" : "text-black hover:text-[#ffffff]"}
+      `}
             >
               {t.label}
             </button>
@@ -152,9 +149,8 @@ export const NavMenu = ({
           </Link>
 
           <Link
-            href="/about"
-            onClick={() => setIsOpen(false)}
-            className="block px-4 py-2 rounded bg-gray-50"
+            href="/aboutUs"
+            className="px-4 py-2 hover:text-[#ffffff] transition"
           >
             Про нас
           </Link>
@@ -168,9 +164,8 @@ export const NavMenu = ({
           </Link>
 
           <Link
-            href="/contacts"
-            onClick={() => setIsOpen(false)}
-            className="block px-4 py-2 rounded bg-gray-50"
+            href="/contactUs"
+            className="px-4 py-2 hover:text-[#ffffff] transition"
           >
             Контакти
           </Link>

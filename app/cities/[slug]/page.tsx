@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
 import { NavMenu } from "@/app/Components/navMenu";
 import Loader from "@/app/Components/Loader";
-// import { TourTable } from "@/app/Components/TourTable";
 import { Footer } from "@/app/Components/footer";
 
 /* ================= TYPES ================= */
@@ -26,8 +25,8 @@ interface City {
   RouteBy?: string;
   Confession?: string[];
   description?: string;
-  DateOfBeggining?: string;
-  DateOfEnd?: string;
+  DateOfBeggining?: any;
+  DateOfEnd?: any;
   Duration?: string;
   Route?: string;
   TourPrice?: string;
@@ -36,7 +35,6 @@ interface City {
   Country?: string[];
   ImportantInfo?: string;
   typeUa?: string[];
-  tableRows?: { date?: string }[];
   allDates?: { label: string; value: number }[];
   nearestDate?: string;
   nearestDateValue?: number;
@@ -50,22 +48,19 @@ const hasText = (value?: string | null) =>
 
 const hasArray = (value?: unknown) => Array.isArray(value) && value.length > 0;
 
-const parseSingleDate = (value?: string): Date | null => {
+const parseSingleDate = (value?: string | any): Date | null => {
   if (!value) return null;
-  const [day, month, year] = value.split(".");
-  if (!day || !month || !year) return null;
-  const date = new Date(Number(year), Number(month) - 1, Number(day));
-  return isNaN(date.getTime()) ? null : date;
+  if (typeof value.toDate === "function") return value.toDate();
+  if (value instanceof Date) return value;
+  if (typeof value === "string") {
+    const parts = value.split(".");
+    if (parts.length !== 3) return null;
+    const [day, month, year] = parts;
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+    return isNaN(date.getTime()) ? null : date;
+  }
+  return null;
 };
-
-const parseRangeDate = (value?: string): Date | null => {
-  if (!value) return null;
-  if (!value.includes("-")) return parseSingleDate(value);
-  const [startPart] = value.split("-").map((v) => v.trim());
-  return parseSingleDate(startPart);
-};
-
-/* ================= ANIMATION ================= */
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -81,51 +76,58 @@ export default function CityPage() {
 
   const [city, setCity] = useState<City | null>(null);
   const [loading, setLoading] = useState(true);
+  const [days, setDays] = useState<[string, string][]>([]);
 
   useEffect(() => {
     const fetchCity = async () => {
       if (!slug) return;
 
       try {
-        // 🔹 Тут змінили колекцію на "Cities"
         const q = query(collection(db, "Cities"), where("slug", "==", slug));
         const snapshot = await getDocs(q);
 
         if (!snapshot.empty) {
-          const raw = snapshot.docs[0].data();
+          const docSnap = snapshot.docs[0];
+          const raw = docSnap.data();
 
-          // =================== Підготовка дат ===================
+          // =================== Дати туру ===================
           const allDates: { label: string; value: number }[] = [];
+          const formatDate = (d: Date) =>
+            `${String(d.getDate()).padStart(2, "0")}.${String(
+              d.getMonth() + 1,
+            ).padStart(2, "0")}.${d.getFullYear()}`;
 
           if (raw.DateOfBeggining && raw.DateOfEnd) {
             const startDate = parseSingleDate(raw.DateOfBeggining);
-            if (startDate) {
+            const endDate = parseSingleDate(raw.DateOfEnd);
+            if (startDate && endDate) {
               allDates.push({
-                label: `${raw.DateOfBeggining} - ${raw.DateOfEnd}`,
+                label: `${formatDate(startDate)} – ${formatDate(endDate)}`,
                 value: startDate.getTime(),
               });
             }
           }
 
-          if (Array.isArray(raw.tableRows)) {
-            raw.tableRows.forEach((row: { date?: string }) => {
-              const date = parseRangeDate(row.date);
-              if (date)
-                allDates.push({ label: row.date || "", value: date.getTime() });
-            });
-          }
-
+          allDates.sort((a, b) => a.value - b.value);
           const now = new Date();
-          const futureDates = allDates.filter((d) => d.value >= now.getTime());
-          const nearest = futureDates.sort((a, b) => a.value - b.value)[0];
+          const nearest =
+            allDates.find((d) => d.value >= now.getTime()) || allDates[0];
 
           setCity({
-            id: snapshot.docs[0].id,
+            id: docSnap.id,
             ...raw,
             allDates,
             nearestDate: nearest?.label,
             nearestDateValue: nearest?.value,
           } as City);
+
+          // =================== План туру ===================
+          const plan: [string, string][] = Object.keys(raw)
+            .filter((key) => key.startsWith("Day"))
+            .sort() // Day1, Day2, ...
+            .map((key) => [key, raw[key]]);
+
+          setDays(plan);
         } else {
           setCity(null);
         }
@@ -149,25 +151,9 @@ export default function CityPage() {
 
   if (!city) return <p className="text-center mt-10">Тур не знайдено</p>;
 
-  const images = [
-    city.img1,
-    city.img2,
-    city.img3,
-    city.img4,
-    city.img5,
-    city.img6,
-    city.img7,
-    city.img8,
-    city.img9,
-    city.img10,
-  ].filter(hasText);
-
-  const days = Object.entries(city)
-    .filter(([key, value]) => key.startsWith("Day") && hasText(value))
-    .sort(
-      ([a], [b]) =>
-        parseInt(a.replace("Day", "")) - parseInt(b.replace("Day", "")),
-    );
+  const images = [city.img1, city.img2, city.img3, city.img4, city.img5].filter(
+    hasText,
+  );
 
   return (
     <div>
@@ -175,7 +161,7 @@ export default function CityPage() {
       <NavMenu />
 
       <div className="max-w-4xl mx-auto p-6 space-y-10">
-        {hasText(city.Name) && (
+        {city.Name && (
           <motion.h1
             variants={fadeUp}
             initial="hidden"
@@ -202,19 +188,24 @@ export default function CityPage() {
           </div>
 
           <div className="flex flex-col gap-2.5 max-w-96 mx-auto">
-            {hasText(city.DateOfBeggining) && hasText(city.DateOfEnd) && (
+            {/* ================= Дати ================= */}
+            {hasArray(city.allDates) && (
               <motion.div
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+                className="p-4 bg-base-100 rounded shadow-md"
               >
-                <strong>Дати:</strong> {city.DateOfBeggining} – {city.DateOfEnd}
+                <strong>Дати туру:</strong>
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  {city.allDates!.map((d, i: number) => (
+                    <li key={i}>{d.label}</li>
+                  ))}
+                </ul>
               </motion.div>
             )}
-
             {hasArray(city.Country) && (
               <motion.div
                 variants={fadeUp}
@@ -239,7 +230,6 @@ export default function CityPage() {
                 <strong>Тривалість:</strong> {city.Duration}
               </motion.div>
             )}
-
             {hasText(city.Route) && (
               <motion.div
                 variants={fadeUp}
@@ -264,7 +254,6 @@ export default function CityPage() {
                 <strong>Тип транспорту:</strong> {city.RouteBy}
               </motion.div>
             )}
-
             {hasArray(city.typeUa) && (
               <motion.div
                 variants={fadeUp}
@@ -282,7 +271,6 @@ export default function CityPage() {
                 </ul>
               </motion.div>
             )}
-
             {hasArray(city.Confession) && (
               <motion.div
                 variants={fadeUp}
@@ -302,22 +290,6 @@ export default function CityPage() {
             )}
           </div>
         </div>
-
-        {/* <TourTable cityId={city.id} /> */}
-        {hasText(city.description) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
-            <strong>Опис:</strong>
-            <p className="mt-2 whitespace-pre-line">{city.description}</p>
-          </motion.div>
-        )}
-
         {hasText(city.chatInfo) && (
           <motion.div
             variants={fadeUp}
@@ -331,7 +303,22 @@ export default function CityPage() {
             <p className="mt-2 whitespace-pre-line">{city.chatInfo}</p>
           </motion.div>
         )}
-        {/* План туру */}
+
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+        >
+          <strong>Телефони для бронювання , запитань:</strong>
+          <ul className="list-disc list-inside mt-2">
+            <li>+38050 101 07 42</li>
+            <li>+38096 935 52 98</li>
+          </ul>
+        </motion.div>
+        {/* ================= План туру ================= */}
         {days.length > 0 && (
           <motion.div
             variants={fadeUp}
@@ -339,19 +326,24 @@ export default function CityPage() {
             whileInView="visible"
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="space-y-6"
           >
             <h2 className="font-bold mb-4 p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md">
               План туру:
             </h2>
+
             <div className="space-y-4">
               {days.map(([key, value], i) => (
                 <div key={key} className="space-y-4">
+                  {/* Карточка дня */}
                   <div className="p-4 bg-base-100 rounded shadow-md">
                     <h3 className="font-semibold mb-2">
                       День {key.replace("Day", "")}
                     </h3>
                     <p>{value}</p>
                   </div>
+
+                  {/* Зображення дня, якщо є */}
                   {images[i] && (
                     <img
                       src={images[i]}
@@ -362,6 +354,20 @@ export default function CityPage() {
                 </div>
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {hasText(city.description) && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
+          >
+            <strong>Опис:</strong>
+            <p className="mt-2 whitespace-pre-line">{city.description}</p>
           </motion.div>
         )}
 
