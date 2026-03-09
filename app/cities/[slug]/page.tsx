@@ -219,21 +219,20 @@ export default function CityPage() {
     <div>
       <NavLinks />
       <NavMenu />
+      {city.Name && (
+        <motion.h1
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="marmelad-font bg-[#E6D8C3] m-0 p-4 text-3xl font-bold text-center text-[#5D866C]"
+        >
+          {city.Name}
+        </motion.h1>
+      )}
 
       <div className="max-w-4xl mx-auto p-6 space-y-10">
-        {city.Name && (
-          <motion.h1
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl font-bold text-center text-[#ffffff]"
-          >
-            {city.Name}
-          </motion.h1>
-        )}
-
         <div className="flex flex-col lg:flex-row gap-6 max-w-4xl mx-auto px-4">
           <div className="carousel carousel-vertical rounded-box w-full h-64 sm:h-80 lg:h-[500px] lg:w-sm">
             {images[0] && (
@@ -315,7 +314,13 @@ export default function CityPage() {
             )}
           </div>
         </div>
-
+        {/* ================= Опис ================= */}
+        {hasText(city.description) && (
+          <motion.div className="p-4 bg-base-100 rounded shadow-md">
+            <strong>Опис:</strong>
+            <p className="mt-2 whitespace-pre-line">{city.description}</p>
+          </motion.div>
+        )}
         {/* ================= Chat Info ================= */}
         {hasText(city.chatInfo) && (
           <motion.div className="p-4 bg-base-100 rounded shadow-md">
@@ -445,12 +450,6 @@ export default function CityPage() {
         ))}
 
         {/* ================= Опис та INCLUDES ================= */}
-        {hasText(city.description) && (
-          <motion.div className="p-4 bg-base-100 rounded shadow-md">
-            <strong>Опис:</strong>
-            <p className="mt-2 whitespace-pre-line">{city.description}</p>
-          </motion.div>
-        )}
 
         {hasArray(city.INCLUDES) && (
           <motion.div className="p-4 bg-base-100 rounded shadow-md">

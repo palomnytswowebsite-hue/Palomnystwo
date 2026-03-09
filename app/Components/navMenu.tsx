@@ -35,7 +35,8 @@ export const NavMenu = ({
 
   return (
     <nav className="sticky top-0 z-50 bg-[#E6D8C3] border-b">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-center">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-center">
+        {/* MOBILE BUTTON */}
         <button
           className="md:hidden px-3 py-2 border rounded"
           onClick={() => setIsOpen(true)}
@@ -43,94 +44,118 @@ export const NavMenu = ({
           ☰
         </button>
 
-        {/* Desktop */}
+        {/* DESKTOP MENU */}
         <div className="hidden md:flex gap-4 items-center">
-          {/* Сторінки */}
-          <Link href="/" className="px-4 py-2 hover:text-[#ffffff] transition">
+          <Link href="/" className="btn btn-ghost">
             Головна
           </Link>
 
-          <Link
-            href="/aboutUs"
-            className="px-4 py-2 hover:text-[#ffffff] transition"
-          >
-            Про нас
-          </Link>
+          {/* Паломництва dropdown */}
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-ghost">
+              Паломництва
+            </div>
 
-          <Link
-            href="/gallery"
-            className="px-4 py-2 hover:text-[#ffffff] transition"
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+            >
+              {/* Скасувати вибір */}
+              <li>
+                <button
+                  onClick={() => {
+                    setType?.("pilgrimage");
+                    setCountry?.(undefined);
+                  }}
+                >
+                  Всі країни
+                </button>
+              </li>
+
+              <div className="divider my-1"></div>
+
+              {/* Країни */}
+              {COUNTRIES.map((c) => (
+                <li key={c.slug}>
+                  <button
+                    onClick={() => {
+                      setType?.("pilgrimage");
+                      setCountry?.(c.slug);
+                    }}
+                  >
+                    {c.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Море */}
+          <button
+            onClick={() =>
+              setType?.(selectedType === "sea" ? undefined : "sea")
+            }
+            className="btn btn-ghost"
           >
+            Море
+          </button>
+
+          {/* Термали */}
+          <button
+            onClick={() =>
+              setType?.(selectedType === "thermals" ? undefined : "thermals")
+            }
+            className="btn btn-ghost"
+          >
+            Термали
+          </button>
+
+          {/* Цікаве dropdown */}
+          <div className="dropdown">
+            <div tabIndex={0} role="button" className="btn btn-ghost">
+              Цікаве
+            </div>
+
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+            >
+              <li>
+                <Link href="/interesting/thoughts">Думки</Link>
+              </li>
+
+              <li>
+                <Link href="/interesting/about">Про...</Link>
+              </li>
+            </ul>
+          </div>
+
+          <Link href="/gallery" className="btn btn-ghost">
             Галерея
           </Link>
 
-          <Link className="px-4 py-2 hover:text-[#ffffff] transition" href="">
-            Цікаве
-          </Link>
-          <Link
-            href="/contactUs"
-            className="px-4 py-2 hover:text-[#ffffff] transition"
-          >
+          <Link href="/contactUs" className="btn btn-ghost">
             Контакти
           </Link>
 
-          {/* Фільтр типів */}
-          {TYPES.filter(
-            (t) => t.slug !== "adventure" && t.slug !== "excursion",
-          ).map((t) => (
-            <button
-              key={t.slug}
-              onClick={() =>
-                setType?.(selectedType === t.slug ? undefined : t.slug)
-              }
-              className={`transition m-2.5
-        ${selectedType === t.slug ? "text-white" : "text-black hover:text-[#ffffff]"}
-      `}
-            >
-              {t.label}
-            </button>
-          ))}
-
-          {/* Вибір країни */}
-          <select
-            value={selectedCountry || ""}
-            onChange={(e) => setCountry?.(e.target.value || undefined)}
-            className="px-4 py-2 rounded border bg-white"
-          >
-            <option value="">Всі країни</option>
-            {COUNTRIES.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.label}
-              </option>
-            ))}
-          </select>
-
-          {(selectedType || selectedCountry) && (
-            <button
-              onClick={() => {
-                setType?.(undefined);
-                setCountry?.(undefined);
-              }}
-              className="px-4 py-2 rounded bg-red-200 hover:bg-red-300"
-            >
-              Скинути
-            </button>
-          )}
+          <Link href="/aboutUs" className="btn btn-ghost">
+            Про нас
+          </Link>
         </div>
       </div>
 
-      {/* Overlay */}
+      {/* MOBILE OVERLAY */}
       <div
-        className={`fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 md:hidden
-          ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
+        className={`fixed inset-0 bg-black/40 z-40 md:hidden
+        ${isOpen ? "block" : "hidden"}`}
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Drawer */}
+      {/* MOBILE MENU */}
       <div
         className={`fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-lg
-          transform transition-transform duration-300 ease-in-out md:hidden
-          ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        transform transition-transform md:hidden
+        ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="p-4 space-y-4">
           <button
@@ -140,64 +165,18 @@ export const NavMenu = ({
             ✕
           </button>
 
-          <Link
-            href="/"
-            onClick={() => setIsOpen(false)}
-            className="block px-4 py-2 rounded bg-gray-50"
-          >
+          <Link href="/" className="block">
             Головна
           </Link>
-
-          <Link
-            href="/aboutUs"
-            className="px-4 py-2 hover:text-[#ffffff] transition"
-          >
-            Про нас
+          <Link href="/gallery" className="block">
+            Галерея
           </Link>
-
-          <Link
-            href="/reviews"
-            onClick={() => setIsOpen(false)}
-            className="block px-4 py-2 rounded bg-gray-50"
-          >
-            Відгуки
-          </Link>
-
-          <Link
-            href="/contactUs"
-            className="px-4 py-2 hover:text-[#ffffff] transition"
-          >
+          <Link href="/contactUs" className="block">
             Контакти
           </Link>
-
-          {TYPES.map((t) => (
-            <button
-              key={t.slug}
-              onClick={() => {
-                setType?.(selectedType === t.slug ? undefined : t.slug);
-                setIsOpen(false);
-              }}
-              className="block w-full text-left px-4 py-2 rounded border bg-gray-50"
-            >
-              {t.label}
-            </button>
-          ))}
-
-          <select
-            value={selectedCountry || ""}
-            onChange={(e) => {
-              setCountry?.(e.target.value || undefined);
-              setIsOpen(false);
-            }}
-            className="w-full px-4 py-2 rounded border"
-          >
-            <option value="">Всі країни</option>
-            {COUNTRIES.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.label}
-              </option>
-            ))}
-          </select>
+          <Link href="/aboutUs" className="block">
+            Про нас
+          </Link>
         </div>
       </div>
     </nav>

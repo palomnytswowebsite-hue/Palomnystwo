@@ -1,83 +1,56 @@
 "use client";
-import { Component } from "react";
-import data from "./data";
-import NavLinks from "../Components/navLinks";
-import { NavMenu } from "../Components/navMenu";
-import { Footer } from "../Components/footer";
-import "./pin.css";
 
-interface ImageItem {
-  img: string;
-  alt?: string;
-}
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/app/firebase/config";
+import Link from "next/link";
 
-interface AppState {
-  preview: boolean;
-  previewUrl: string;
-}
+export default function GalleryPage() {
+  const [countries, setCountries] = useState<{ slug: string; label: string }[]>(
+    [],
+  );
 
-interface AppProps {}
+  useEffect(() => {
+    const load = async () => {
+      const snap = await getDocs(collection(db, "Cities"));
 
-export default class App extends Component<AppProps, AppState> {
-  constructor(props: AppProps) {
-    super(props);
-    this.state = {
-      preview: false,
-      previewUrl: "",
+      const cities = snap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const list = cities.flatMap((city: any) => {
+        if (!Array.isArray(city.CountrySlug)) return [];
+
+        return city.CountrySlug.map((slug: string, i: number) => ({
+          slug,
+          label: city.Country?.[i] || slug,
+        }));
+      });
+
+      const unique = Array.from(new Map(list.map((c) => [c.slug, c])).values());
+
+      setCountries(unique);
     };
-  }
 
-  setPreview = (id: number) => {
-    this.setState({
-      preview: true,
-      previewUrl: data[id].img,
-    });
-  };
+    load();
+  }, []);
 
-  cancelPreview = () => {
-    this.setState({
-      preview: false,
-      previewUrl: "",
-    });
-  };
+  return (
+    <div className="max-w-6xl mx-auto p-10">
+      <h1 className="text-3xl mb-8">Галерея подорожей</h1>
 
-  render() {
-    return (
-      <div className="app">
-        <NavLinks />
-        <NavMenu />
-
-        <header>
-          <h1 className="marmelad-font bg-[#E6D8C3] m-0 p-2.5 text-3xl font-bold text-center text-[#5D866C]">
-            Наша Галерея
-          </h1>
-        </header>
-
-        <div className="gallery p-6">
-          {data.map((image: ImageItem, idx: number) => (
-            <div
-              key={idx}
-              className="item"
-              onClick={() => this.setPreview(idx)}
-            >
-              <img src={image.img} alt={image.alt || "gallery image"} />
-            </div>
-          ))}
-
-          {this.state.preview && (
-            <div id="preview" onClick={this.cancelPreview}>
-              <img src={this.state.previewUrl} alt="preview" />
-
-              {/* кнопка закриття */}
-              <button className="closeBtn" onClick={this.cancelPreview}>
-                ✕
-              </button>
-            </div>
-          )}
-        </div>
-
-        <Footer />
+      <div className="grid md:grid-cols-3 gap-6">
+        {countries.map((c) => (
+          <Link
+            key={c.slug}
+            href={`/gallery/${c.slug}`}
+            className="border p-6 rounded-lg hover:shadow-lg transition"
+          >
+            {c.label}
+          </Link>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 }
