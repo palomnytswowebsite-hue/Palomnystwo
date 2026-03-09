@@ -8,7 +8,7 @@ export const FAB = () => {
         <div
           tabIndex={0}
           role="button"
-          className="bg-amber-50 rounded-3xl btn-lg btn-circle btn-secondary"
+          className="bg-[#E6D8C3] rounded-3xl btn-lg btn-circle btn-secondary"
         >
           {/* CHAT ICON */}
           {/* <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">

@@ -1,51 +1,93 @@
 .gallery {
-  margin: 20px 0;
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
   column-count: 4;
-  column-gap: 8px;
+  column-gap: 10px;
 }
 
 .item {
   display: inline-block;
-  /* display: flex; */
   width: 100%;
+  margin-bottom: 10px;
 }
 
 .item img {
   cursor: pointer;
-  display: block;
   width: 100%;
-  border-radius: 6px;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.item img:hover {
+  transform: scale(1.03);
 }
 
 @media (max-width: 768px) {
   .gallery {
-    width: 90%;
     column-count: 2;
   }
 }
 
+/* MODAL */
+
 #preview {
-  /* align-content: center; */
-  /* justify-content: center; */
   position: fixed;
-  z-index: 10;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* display: flex; */
-  padding: 20px;
+  inset: 0;
+  z-index: 999;
+
   display: flex;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* overflow: hidden; */
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px;
+
+  background: rgba(0, 0, 0, 0.85);
+
+  animation: fadeIn 0.3s ease;
 }
 
 #preview img {
-  margin: auto;
-  width: 60%;
-  height: auto;
-  /* max-width: 400px; */
-  /* max-height: 100%; */
+  max-width: 90vw;
+  max-height: 90vh;
+
+  border-radius: 12px;
+
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+
+  animation: zoomIn 0.3s ease;
+}
+
+/* кнопка закриття */
+
+.closeBtn {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+
+  font-size: 32px;
+  color: white;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* animations */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1);
+  }
 }

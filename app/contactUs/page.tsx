@@ -8,6 +8,9 @@ export default function ContactPage() {
     <section>
       <NavLinks />
       <NavMenu />
+      <h1 className="marmelad-font bg-[#E6D8C3] m-0 p-2.5 text-3xl font-bold text-center text-[#5D866C]">
+        Контакти
+      </h1>
       <div className="flex flex-col md:flex-row justify-center  gap-8 p-8 bg-gray-200 mt-5">
         <iframe
           className="w-56 h-56 lg: w-80 h-80"

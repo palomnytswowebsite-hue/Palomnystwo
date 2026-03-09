@@ -8,9 +8,32 @@ import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
 import { NavMenu } from "@/app/Components/navMenu";
 import Loader from "@/app/Components/Loader";
+import ScrollToTop from "@/app/Components/ScrollToTop";
 import { Footer } from "@/app/Components/footer";
+import { FAB } from "../../Components/FAB";
 
 /* ================= TYPES ================= */
+interface PriceRow {
+  type?: string;
+  albutPrice?: string;
+  preferential?: string;
+  kids3and14?: string;
+}
+
+interface DebrecenPriceRow {
+  type?: string;
+  albutPrice?: string;
+  preferential?: string;
+  eveningEntry?: string;
+  extraForSaunaEntry?: string;
+}
+
+interface MediterraneanPriceRow {
+  albutPrice?: string;
+  preferential?: string;
+  family?: string;
+  kidsBefore3?: string;
+}
 
 interface City {
   id: string;
@@ -38,11 +61,13 @@ interface City {
   allDates?: { label: string; value: number }[];
   nearestDate?: string;
   nearestDateValue?: number;
+  thermalNymphsPrice?: PriceRow[];
+  thermalBathsOfDebrecenPrice?: DebrecenPriceRow[];
+  mediterraneanWaterPark?: MediterraneanPriceRow[];
   [key: string]: any;
 }
 
 /* ================= HELPERS ================= */
-
 const hasText = (value?: string | null) =>
   typeof value === "string" && value.trim() !== "";
 
@@ -68,7 +93,6 @@ const fadeUp = {
 };
 
 /* ================= PAGE ================= */
-
 export default function CityPage() {
   const params = useParams();
   const rawSlug = params.slug;
@@ -90,7 +114,7 @@ export default function CityPage() {
           const docSnap = snapshot.docs[0];
           const raw = docSnap.data();
 
-          // =================== Дати туру ===================
+          /* =================== Дати туру =================== */
           const allDates: { label: string; value: number }[] = [];
           const formatDate = (d: Date) =>
             `${String(d.getDate()).padStart(2, "0")}.${String(
@@ -113,21 +137,57 @@ export default function CityPage() {
           const nearest =
             allDates.find((d) => d.value >= now.getTime()) || allDates[0];
 
+          /* =================== План туру =================== */
+          const plan: [string, string][] = Object.keys(raw)
+            .filter((key) => key.startsWith("Day"))
+            .sort()
+            .map((key) => [key, raw[key]]);
+
+          setDays(plan);
+
+          /* =================== Підколекції =================== */
+          const thermalNymphsSnap = await getDocs(
+            collection(db, "Cities", docSnap.id, "thermalNymphsPrice"),
+          );
+
+          const debrecenSnap = await getDocs(
+            collection(db, "Cities", docSnap.id, "thermalBathsOfDebrecenPrice"),
+          );
+
+          const mediterraneanSnap = await getDocs(
+            collection(db, "Cities", docSnap.id, "mediterraneanWaterPark"),
+          );
+
+          const thermalNymphsPrice: PriceRow[] = thermalNymphsSnap.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }),
+          ) as PriceRow[];
+
+          const thermalBathsOfDebrecenPrice: DebrecenPriceRow[] =
+            debrecenSnap.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as DebrecenPriceRow[];
+
+          const mediterraneanWaterPark: MediterraneanPriceRow[] =
+            mediterraneanSnap.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as MediterraneanPriceRow[];
+
+          /* =================== Встановлюємо city =================== */
           setCity({
             id: docSnap.id,
             ...raw,
             allDates,
             nearestDate: nearest?.label,
             nearestDateValue: nearest?.value,
+            thermalNymphsPrice,
+            thermalBathsOfDebrecenPrice,
+            mediterraneanWaterPark,
           } as City);
-
-          // =================== План туру ===================
-          const plan: [string, string][] = Object.keys(raw)
-            .filter((key) => key.startsWith("Day"))
-            .sort() // Day1, Day2, ...
-            .map((key) => [key, raw[key]]);
-
-          setDays(plan);
         } else {
           setCity(null);
         }
@@ -206,63 +266,34 @@ export default function CityPage() {
                 </ul>
               </motion.div>
             )}
+
+            {/* ================= Інші блоки ================= */}
             {hasArray(city.Country) && (
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-              >
+              <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Країна:</strong> {city.Country!.join(", ")}
               </motion.div>
             )}
+
             {hasText(city.Duration) && (
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-              >
+              <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Тривалість:</strong> {city.Duration}
               </motion.div>
             )}
+
             {hasText(city.Route) && (
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-              >
+              <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Маршрут:</strong> {city.Route}
               </motion.div>
             )}
+
             {hasText(city.RouteBy) && (
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-              >
+              <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Тип транспорту:</strong> {city.RouteBy}
               </motion.div>
             )}
+
             {hasArray(city.typeUa) && (
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-              >
+              <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Тип туру:</strong>
                 <ul className="list-disc list-inside mt-2">
                   {city.typeUa!.map((type, i) => (
@@ -271,15 +302,9 @@ export default function CityPage() {
                 </ul>
               </motion.div>
             )}
+
             {hasArray(city.Confession) && (
-              <motion.div
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-              >
+              <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Тип Конфесії:</strong>
                 <ul className="list-disc list-inside mt-2">
                   {city.Confession!.map((types, i) => (
@@ -290,96 +315,145 @@ export default function CityPage() {
             )}
           </div>
         </div>
+
+        {/* ================= Chat Info ================= */}
         {hasText(city.chatInfo) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
+          <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>Інформація для чату:</strong>
             <p className="mt-2 whitespace-pre-line">{city.chatInfo}</p>
           </motion.div>
         )}
 
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-        >
+        {/* ================= Телефони ================= */}
+        <motion.div className="p-4 bg-base-100 rounded shadow-md">
           <strong>Телефони для бронювання , запитань:</strong>
           <ul className="list-disc list-inside mt-2">
             <li>+38050 101 07 42</li>
             <li>+38096 935 52 98</li>
           </ul>
         </motion.div>
-        {/* ================= План туру ================= */}
-        {days.length > 0 && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-6"
-          >
-            <h2 className="font-bold mb-4 p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md">
-              План туру:
-            </h2>
 
-            <div className="space-y-4">
-              {days.map(([key, value], i) => (
-                <div key={key} className="space-y-4">
-                  {/* Карточка дня */}
-                  <div className="p-4 bg-base-100 rounded shadow-md">
-                    <h3 className="font-semibold mb-2">
-                      День {key.replace("Day", "")}
-                    </h3>
-                    <p>{value}</p>
-                  </div>
-
-                  {/* Зображення дня, якщо є */}
-                  {images[i] && (
-                    <img
-                      src={images[i]}
-                      alt={`Day ${i + 1}`}
-                      className="w-full h-full object-cover rounded"
-                    />
-                  )}
-                </div>
-              ))}
+        {/* ================= Дні та Day3 priceTable ================= */}
+        {days.map(([key, value], i) => (
+          <div key={key} className="space-y-4">
+            <div className="p-4 bg-base-100 rounded shadow-md">
+              <h3 className="font-semibold mb-2">
+                День {key.replace("Day", "")}
+              </h3>
+              <p>{value}</p>
             </div>
-          </motion.div>
-        )}
 
+            {images[i] && (
+              <img
+                src={images[i]}
+                alt={`Day ${i + 1}`}
+                className="w-full h-full object-cover rounded"
+              />
+            )}
+
+            {key === "Day3" && (
+              <>
+                {/* ================= Таблиця thermalNymphsPrice ================= */}
+                {hasArray(city.thermalNymphsPrice) && (
+                  <div className="p-4 bg-base-100 rounded shadow-md overflow-x-auto">
+                    <strong>Ціни Аквапарку Німфея:</strong>
+                    <table className="table w-full mt-4 text-center">
+                      <thead>
+                        <tr>
+                          <th>Тип квитка</th>
+                          <th>Дорослий</th>
+                          <th>Студентський / пенсійний 65+</th>
+                          <th>Дитячий 3 – 14 р.</th>
+                          <th>Дитячий до 3 р.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {city.thermalNymphsPrice!.map((row, i) => (
+                          <tr key={i}>
+                            <td>{row.type}</td>
+                            <td>{row.albutPrice}</td>
+                            <td>{row.preferential}</td>
+                            <td>{row.kids3and14}</td>
+                            <td>БЕЗКОШТОВНО</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* ================= Таблиця thermalBathsOfDebrecenPrice ================= */}
+                {hasArray(city.thermalBathsOfDebrecenPrice) && (
+                  <div className="p-4 bg-base-100 rounded shadow-md overflow-x-auto">
+                    <strong>
+                      Ціни на квитки у термальні купальні Дебрецену:
+                    </strong>
+                    <table className="table w-full mt-4 text-center">
+                      <thead>
+                        <tr>
+                          <th>Тип квитка</th>
+                          <th>Дорослий</th>
+                          <th>Студентський / пенсійний 65+</th>
+                          <th>Дитячий 3 – 14 р.</th>
+                          <th>Додатково за сауну</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {city.thermalBathsOfDebrecenPrice!.map((row, i) => (
+                          <tr key={i}>
+                            <td>{row.type}</td>
+                            <td>{row.albutPrice}</td>
+                            <td>{row.preferential}</td>
+                            <td>{row.eveningEntry}</td>
+                            <td>{row.extraForSaunaEntry}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* ================= Таблиця mediterraneanWaterPark ================= */}
+                {hasArray(city.mediterraneanWaterPark) && (
+                  <div className="p-4 bg-base-100 rounded shadow-md overflow-x-auto">
+                    <strong>Ціни Середземноморський Аквапарк:</strong>
+                    <table className="table w-full mt-4 text-center">
+                      <thead>
+                        <tr>
+                          <th>Дорослий</th>
+                          <th>Студентський / пенсійний 65+</th>
+                          <th>Сімейний 2 дор + 1 дит.</th>
+                          <th>Вхід для дітей до 3 р.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {city.mediterraneanWaterPark!.map((row, i) => (
+                          <tr key={i}>
+                            <td>{row.albutPrice}</td>
+                            <td>{row.preferential}</td>
+                            <td>{row.family}</td>
+                            <td>{row.kidsBefore3}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        ))}
+
+        {/* ================= Опис та INCLUDES ================= */}
         {hasText(city.description) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
+          <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>Опис:</strong>
             <p className="mt-2 whitespace-pre-line">{city.description}</p>
           </motion.div>
         )}
 
         {hasArray(city.INCLUDES) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
+          <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>У вартість входить:</strong>
             <ul className="list-disc list-inside mt-2 space-y-1">
               {city.INCLUDES!.map((item, i) => (
@@ -390,14 +464,7 @@ export default function CityPage() {
         )}
 
         {hasArray(city.NOTINCLUDE) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
+          <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>У вартість не входить:</strong>
             <ul className="list-disc list-inside mt-2 space-y-1">
               {city.NOTINCLUDE!.map((item, i) => (
@@ -408,18 +475,14 @@ export default function CityPage() {
         )}
 
         {hasText(city.ImportantInfo) && (
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-4 bg-base-100 rounded shadow-[#86B0BD] shadow-md"
-          >
+          <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>Важлива інформація:</strong>
             <p className="mt-2 whitespace-pre-line">{city.ImportantInfo}</p>
           </motion.div>
         )}
+
+        <ScrollToTop />
+        <FAB />
       </div>
 
       <Footer />
