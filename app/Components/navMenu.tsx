@@ -33,6 +33,16 @@ export const NavMenu = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const updateType = (type?: string) => {
+    setType?.(type);
+    if (type !== "pilgrimage") setCountry?.(undefined);
+  };
+
+  const updateCountry = (country?: string) => {
+    setType?.("pilgrimage");
+    setCountry?.(country);
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-[#E6D8C3] border-b">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-center">
@@ -55,34 +65,19 @@ export const NavMenu = ({
             <div tabIndex={0} role="button" className="btn btn-ghost">
               Паломництва
             </div>
-
             <ul
               tabIndex={0}
               className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
             >
-              {/* Скасувати вибір */}
               <li>
-                <button
-                  onClick={() => {
-                    setType?.("pilgrimage");
-                    setCountry?.(undefined);
-                  }}
-                >
+                <button onClick={() => updateType("pilgrimage")}>
                   Всі країни
                 </button>
               </li>
-
               <div className="divider my-1"></div>
-
-              {/* Країни */}
               {COUNTRIES.map((c) => (
                 <li key={c.slug}>
-                  <button
-                    onClick={() => {
-                      setType?.("pilgrimage");
-                      setCountry?.(c.slug);
-                    }}
-                  >
+                  <button onClick={() => updateCountry(c.slug)}>
                     {c.label}
                   </button>
                 </li>
@@ -110,34 +105,33 @@ export const NavMenu = ({
             Термали
           </button>
 
-          {/* Цікаве dropdown */}
+          {/* Цікаві місця dropdown */}
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost">
               Цікаве
             </div>
-
             <ul
               tabIndex={0}
               className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
             >
+              {/* Список цікавих місць */}
+              <li>
+                <Link href="/interesting">Цікаві місця</Link>
+              </li>
+              {/* Додаткові підсторінки, якщо будуть */}
               <li>
                 <Link href="/interesting/thoughts">Думки</Link>
-              </li>
-
-              <li>
-                <Link href="/interesting/about">Про...</Link>
               </li>
             </ul>
           </div>
 
+          {/* Інші сторінки */}
           <Link href="/gallery" className="btn btn-ghost">
             Галерея
           </Link>
-
           <Link href="/contactUs" className="btn btn-ghost">
             Контакти
           </Link>
-
           <Link href="/aboutUs" className="btn btn-ghost">
             Про нас
           </Link>
@@ -146,16 +140,18 @@ export const NavMenu = ({
 
       {/* MOBILE OVERLAY */}
       <div
-        className={`fixed inset-0 bg-black/40 z-40 md:hidden
-        ${isOpen ? "block" : "hidden"}`}
+        className={`fixed inset-0 bg-black/40 z-40 md:hidden ${
+          isOpen ? "block" : "hidden"
+        }`}
         onClick={() => setIsOpen(false)}
       />
 
       {/* MOBILE MENU */}
       <div
         className={`fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-lg
-        transform transition-transform md:hidden
-        ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+        transform transition-transform md:hidden ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="p-4 space-y-4">
           <button
@@ -176,6 +172,12 @@ export const NavMenu = ({
           </Link>
           <Link href="/aboutUs" className="block">
             Про нас
+          </Link>
+          <Link href="/interesting" className="block">
+            Цікаві місця
+          </Link>
+          <Link href="/interesting/thoughts" className="block">
+            Думки
           </Link>
         </div>
       </div>

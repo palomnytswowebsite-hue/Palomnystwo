@@ -3,6 +3,7 @@ import NavLinks from "./navLinks";
 import { useRef, useEffect } from "react";
 import "../../app/globals.css";
 import { City } from "../Components/HomeClient";
+
 import { NavMenu } from "./navMenu";
 import { CardCityList } from "./CardCityList";
 import { ContactSection } from "./contactSection";
