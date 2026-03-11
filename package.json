@@ -10,9 +10,6 @@
   },
   "dependencies": {
     "@dataconnect/generated": "file:src/dataconnect-generated",
-    "@supabase/auth-helpers-nextjs": "^0.15.0",
-    "@supabase/supabase-js": "^2.93.3",
-    "appwrite": "^21.5.0",
     "cloudinary": "^2.8.0",
     "daisyui": "^5.5.14",
     "firebase": "^12.8.0",
