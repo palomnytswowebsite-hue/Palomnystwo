@@ -120,7 +120,7 @@ export const NavMenu = ({
               </li>
               {/* Додаткові підсторінки, якщо будуть */}
               <li>
-                <Link href="/interesting/thoughts">Думки</Link>
+                <Link href="/interestingThoughts">Думки</Link>
               </li>
             </ul>
           </div>

@@ -49,45 +49,10 @@ export default function PlaceDetailPage() {
       <NavLinks />
       <NavMenu />
 
-      <div className="card bg-white shadow">
-        <figure className="px-10 pt-10">
-          <img
-            src="https://res.cloudinary.com/dwl1expbx/image/upload/v1770135112/grayFotoCity_a3ccak.jpg"
-            alt=""
-            className="rounded-xl"
-          />
-        </figure>
+      <div className="max-w-4xl mx-auto p-10">
+        <h1 className="text-3xl font-bold mb-6">{place.Name}</h1>
 
-        <div className="card-body text-center">
-          <h2 className="text-lg font-semibold">{place.Name}</h2>
-          {/* {city.nearestDate && (
-              <p className=" text-sm text-green-600">
-                Найближча дата: {city.nearestDate}
-              </p>
-            )} */}
-
-          {/* {typeList.length > 0 && <p>{typeList.join(", ")}</p>}
-            {countryList.length > 0 && <p>{countryList.join(", ")}</p>} */}
-
-          {/* {city.allDates && city.allDates.length > 0 && (
-            <div className="mt-2">
-              <h3 className="font-semibold">Тури:</h3>
-              <ul className="text-sm text-gray-500">
-                {city.allDates.map((d, i) => (
-                  <li key={i}>{d.label}</li>
-                ))}
-              </ul>
-            </div>
-          )} */}
-
-          {/* <Link
-              href={`/cities/${city.slug}`}
-              target="_blank"
-              className="btn text-white bg-[#5D866C]"
-            >
-              Детальніше
-            </Link> */}
-        </div>
+        <p className="leading-relaxed text-lg">{place.description}</p>
       </div>
 
       <ScrollToTop />

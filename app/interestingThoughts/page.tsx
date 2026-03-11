@@ -14,20 +14,19 @@ interface Place {
   Name: string;
   slug: string;
   description: string;
-  img1: string;
 }
 
 export default function InterestingPlacePage() {
-  const [places, setPlaces] = useState<Place[]>([]);
+  const [thoughts, setThoughts] = useState<Place[]>([]);
 
   useEffect(() => {
     const loadPlaces = async () => {
-      const snap = await getDocs(collection(db, "InterestingPlace"));
+      const snap = await getDocs(collection(db, "InterestingThoughts"));
       const list = snap.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Place[];
-      setPlaces(list);
+      setThoughts(list);
     };
     loadPlaces();
   }, []);
@@ -37,20 +36,22 @@ export default function InterestingPlacePage() {
       <NavLinks />
       <NavMenu />
       <h1 className="marmelad-font bg-[#E6D8C3] m-0 p-2.5 text-3xl font-bold text-center text-[#5D866C]">
-        Цікаві місця
+        Думки
       </h1>
-
       <div className="max-w-6xl mx-auto p-10">
         <div className="grid md:grid-cols-2 gap-6">
-          {places.map((place) => (
+          {thoughts.map((thought) => (
             <div className="card bg-white shadow">
               <figure className="px-10 pt-10">
-                <img src={place.img1} alt={place.Name} className="rounded-xl" />
+                {/* <img
+                        src="https://res.cloudinary.com/dwl1expbx/image/upload/v1770135112/grayFotoCity_a3ccak.jpg"
+                        className="rounded-xl"
+                      /> */}
               </figure>
 
               <div className="card-body text-center">
-                <h2 className="text-lg font-semibold">{place.Name}</h2>
-
+                <h2 className="text-lg font-semibold">{thought.Name}</h2>
+                <p>{thought.description}</p>
                 {/* {typeList.length > 0 && <p>{typeList.join(", ")}</p>}
                       {countryList.length > 0 && <p>{countryList.join(", ")}</p>} */}
 
@@ -64,14 +65,6 @@ export default function InterestingPlacePage() {
                           </ul>
                         </div>
                       )} */}
-
-                <Link
-                  key={place.id}
-                  href={`/interesting/${place.slug}`}
-                  className="border rounded-xl p-6 hover:shadow-lg transition bg-amber-50"
-                >
-                  Детальніше
-                </Link>
               </div>
             </div>
           ))}

@@ -2,6 +2,7 @@
 import NavLinks from "../Components/navLinks";
 import { NavMenu } from "../Components/navMenu";
 import { ContactSection } from "../Components/contactSection";
+import { FAB } from "../Components/FAB";
 import { Footer } from "../Components/footer";
 import "../globals.css";
 
@@ -54,6 +55,7 @@ export default function AboutUs() {
         </div>
       </section>
       <ContactSection />
+      <FAB />
       <Footer />
     </div>
   );
