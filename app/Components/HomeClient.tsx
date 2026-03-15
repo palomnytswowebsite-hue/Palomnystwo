@@ -7,7 +7,7 @@ import ParalaxHeroSection from "../Components/paralaxHeroSection";
 
 /* ================= TYPES ================= */
 
-export interface TableRow {
+export interface UpcomingTours {
   dates?: string;
   albutPrice?: string;
   kidsBefore10?: string;
@@ -28,7 +28,7 @@ export interface City {
   DateOfBeggining?: Timestamp;
   DateOfEnd?: Timestamp;
 
-  tableRows?: TableRow[];
+  upcomingTour?: UpcomingTours[];
 
   allDates?: { label: string; value: number }[];
   nearestDate?: string;
@@ -78,15 +78,15 @@ async function fetchAllCities(): Promise<City[]> {
       const data = docSnap.data() ?? {};
 
       // Підколекція TableRow
-      const tableRowSnap = await getDocs(
-        collection(doc(db, "Cities", cityId), "TableRow"),
+      const upcomingTourSnap = await getDocs(
+        collection(doc(db, "Cities", cityId), "UpcomingTours"),
       );
-      const tableRows: TableRow[] = tableRowSnap.docs.map(
-        (rowDoc) => rowDoc.data() as TableRow,
+      const upcomingTours: UpcomingTours[] = upcomingTourSnap.docs.map(
+        (rowDoc) => rowDoc.data() as UpcomingTours,
       );
 
       // Дати з TableRow
-      const rowDates: { label: string; value: number }[] = tableRows
+      const rowDates: { label: string; value: number }[] = upcomingTours
         .map((row) => {
           const ts = parseDateString(row.dates || "");
           return ts ? { label: row.dates!, value: ts } : null;
@@ -130,7 +130,7 @@ async function fetchAllCities(): Promise<City[]> {
         chatInfo: data.chatInfo || "",
         DateOfBeggining: data.DateOfBeggining,
         DateOfEnd: data.DateOfEnd,
-        tableRows,
+        upcomingTours,
         allDates,
         nearestDate: nearest?.label || "",
         nearestDateValue: nearest?.value || 0,

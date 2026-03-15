@@ -11,6 +11,7 @@ import Loader from "@/app/Components/Loader";
 import ScrollToTop from "@/app/Components/ScrollToTop";
 import { Footer } from "@/app/Components/footer";
 import { FAB } from "../../Components/FAB";
+import { UpcomingTours } from "@/app/Components/UpcomingTours";
 
 /* ================= TYPES ================= */
 interface PriceRow {
@@ -37,6 +38,7 @@ interface MediterraneanPriceRow {
 
 interface City {
   id: string;
+  docId?: string; // Для UpcomingTours
   Name?: string;
   slug?: string;
   img1?: string;
@@ -180,6 +182,7 @@ export default function CityPage() {
           /* =================== Встановлюємо city =================== */
           setCity({
             id: docSnap.id,
+            docId: docSnap.id, // Для UpcomingTours
             ...raw,
             allDates,
             nearestDate: nearest?.label,
@@ -219,6 +222,7 @@ export default function CityPage() {
     <div>
       <NavLinks />
       <NavMenu />
+
       {city.Name && (
         <motion.h1
           variants={fadeUp}
@@ -314,6 +318,12 @@ export default function CityPage() {
             )}
           </div>
         </div>
+        {/* ================= Таблиця майбутніх турів ================= */}
+        {city.docId && (
+          <div className="max-w-4xl mx-auto p-6">
+            <UpcomingTours cityDocId={city.docId} />
+          </div>
+        )}
         {/* ================= Опис ================= */}
         {hasText(city.description) && (
           <motion.div className="p-4 bg-base-100 rounded shadow-md">
@@ -360,10 +370,12 @@ export default function CityPage() {
               <>
                 {/* ================= Таблиця thermalNymphsPrice ================= */}
                 {hasArray(city.thermalNymphsPrice) && (
-                  <div className="p-4 bg-base-100 rounded shadow-md overflow-x-auto">
-                    <strong>Ціни Аквапарку Німфея:</strong>
-                    <table className="table w-full mt-4 text-center">
-                      <thead>
+                  <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
+                    <strong className="text-white ">
+                      Ціни Аквапарку Німфея:
+                    </strong>
+                    <table className="table  w-full mt-4 text-center">
+                      <thead className="bg-[#86B0BD] text-white text-center">
                         <tr>
                           <th>Тип квитка</th>
                           <th>Дорослий</th>
@@ -372,7 +384,7 @@ export default function CityPage() {
                           <th>Дитячий до 3 р.</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="bg-[#FFF0DD] text-[#000000] text-center">
                         {city.thermalNymphsPrice!.map((row, i) => (
                           <tr key={i}>
                             <td>{row.type}</td>
@@ -389,12 +401,12 @@ export default function CityPage() {
 
                 {/* ================= Таблиця thermalBathsOfDebrecenPrice ================= */}
                 {hasArray(city.thermalBathsOfDebrecenPrice) && (
-                  <div className="p-4 bg-base-100 rounded shadow-md overflow-x-auto">
-                    <strong>
+                  <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
+                    <strong className="text-white">
                       Ціни на квитки у термальні купальні Дебрецену:
                     </strong>
                     <table className="table w-full mt-4 text-center">
-                      <thead>
+                      <thead className="bg-[#86B0BD] text-white text-center">
                         <tr>
                           <th>Тип квитка</th>
                           <th>Дорослий</th>
@@ -403,7 +415,7 @@ export default function CityPage() {
                           <th>Додатково за сауну</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="bg-[#FFF0DD] text-[#000000] text-center">
                         {city.thermalBathsOfDebrecenPrice!.map((row, i) => (
                           <tr key={i}>
                             <td>{row.type}</td>
@@ -420,10 +432,12 @@ export default function CityPage() {
 
                 {/* ================= Таблиця mediterraneanWaterPark ================= */}
                 {hasArray(city.mediterraneanWaterPark) && (
-                  <div className="p-4 bg-base-100 rounded shadow-md overflow-x-auto">
-                    <strong>Ціни Середземноморський Аквапарк:</strong>
+                  <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
+                    <strong className="text-white">
+                      Ціни Середземноморський Аквапарк:
+                    </strong>
                     <table className="table w-full mt-4 text-center">
-                      <thead>
+                      <thead className="bg-[#86B0BD] text-white text-center">
                         <tr>
                           <th>Дорослий</th>
                           <th>Студентський / пенсійний 65+</th>
@@ -479,11 +493,9 @@ export default function CityPage() {
             <p className="mt-2 whitespace-pre-line">{city.ImportantInfo}</p>
           </motion.div>
         )}
-
-        <ScrollToTop />
-        <FAB />
       </div>
-
+      <ScrollToTop />
+      <FAB />
       <Footer />
     </div>
   );
