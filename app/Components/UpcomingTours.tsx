@@ -65,7 +65,11 @@ export function UpcomingTours({ cityDocId }: Props) {
     return <p className="text-center mt-6">Завантаження таблиці...</p>;
 
   if (!rows.length)
-    return <p className="text-center mt-6">Немає даних турів.</p>;
+    return (
+      <p className="text-center mt-6">
+        Ознайомтесь з датами туру які вказані вище
+      </p>
+    );
 
   return (
     <motion.section
@@ -74,9 +78,9 @@ export function UpcomingTours({ cityDocId }: Props) {
       whileInView="visible"
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="w-full rounded-box border p-3.5  mx-auto bg-white  px-4"
+      className="w-full rounded-box border p-3.5  mx-auto bg-[#86B0BD]  px-4"
     >
-      <h2 className="text-lg font-semibold m-2.5 text-center">
+      <h2 className="text-lg font-semibold text-white m-2.5 text-center">
         Найблищі дати туру
       </h2>
       <div className="overflow-x-auto rounded-box border bg-base-100">

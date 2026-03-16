@@ -41,7 +41,7 @@ const NavLinks = () => {
                 viewBox="0 0 32 32"
                 width={16}
                 height={16}
-                fill="currentColor"
+                fill=""
                 className="bi bi-instagram"
                 xmlSpace="preserve"
                 xmlns="http://www.w3.org/2000/svg"
@@ -124,26 +124,14 @@ const NavLinks = () => {
                 xmlSpace="preserve"
                 className="bi bi-youtube"
               >
-                <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <g>
-                    {" "}
-                    <path d="M95.201,25.538c-1.186-5.152-5.4-8.953-10.473-9.52c-12.013-1.341-24.172-1.348-36.275-1.341 c-12.105-0.007-24.266,0-36.279,1.341c-5.07,0.567-9.281,4.368-10.467,9.52C0.019,32.875,0,40.884,0,48.438 C0,55.992,0,64,1.688,71.336c1.184,5.151,5.396,8.952,10.469,9.52c12.012,1.342,24.172,1.349,36.277,1.342 c12.107,0.007,24.264,0,36.275-1.342c5.07-0.567,9.285-4.368,10.471-9.52c1.689-7.337,1.695-15.345,1.695-22.898 C96.875,40.884,96.889,32.875,95.201,25.538z M35.936,63.474c0-10.716,0-21.32,0-32.037c10.267,5.357,20.466,10.678,30.798,16.068 C56.434,52.847,46.23,58.136,35.936,63.474z"></path>{" "}
-                  </g>{" "}
-                </g>
+                <path d="M95.201,25.538c-1.186-5.152-5.4-8.953-10.473-9.52c-12.013-1.341-24.172-1.348-36.275-1.341 c-12.105-0.007-24.266,0-36.279,1.341c-5.07,0.567-9.281,4.368-10.467,9.52C0.019,32.875,0,40.884,0,48.438 C0,55.992,0,64,1.688,71.336c1.184,5.151,5.396,8.952,10.469,9.52c12.012,1.342,24.172,1.349,36.277,1.342 c12.107,0.007,24.264,0,36.275-1.342c5.07-0.567,9.285-4.368,10.471-9.52c1.689-7.337,1.695-15.345,1.695-22.898 C96.875,40.884,96.889,32.875,95.201,25.538z M35.936,63.474c0-10.716,0-21.32,0-32.037c10.267,5.357,20.466,10.678,30.798,16.068 C56.434,52.847,46.23,58.136,35.936,63.474z"></path>{" "}
               </svg>
             </a>
             <div className="tooltip">Youtube</div>
           </li>
         </ul>
-        <ul className="flex  flex-row gap-1.5 text-black">
-          <li className="flex items-center ml-1.5 place-items-center text-black hover:text-[#5D866C] transition-colors duration-300">
+        <ul className="flex  flex-row gap-1.5 ">
+          <li className="flex items-center ml-1.5 place-items-center text-[#118DF0] hover:text-[#5D866C] transition-colors duration-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -158,7 +146,7 @@ const NavLinks = () => {
             </svg>
             050 101 07 42
           </li>
-          <li className="flex items-center place-items-center ml-1.5 text-black hover:text-[#5D866C] transition-colors duration-300 ">
+          <li className="flex items-center place-items-center ml-1.5 text-[#118DF0] hover:text-[#5D866C] transition-colors duration-300 ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -297,6 +285,33 @@ const StyledWrapper = styled.div`
   .example-2 .icon-content a[data-social="youtube"] .filled,
   .example-2 .icon-content a[data-social="youtube"] ~ .tooltip {
     background-color: #ff0000;
+  }
+  .example-2 .icon-content a[data-social="youtube"] {
+    color: #f63049;
+  }
+
+  .example-2 .icon-content a[data-social="instagram"] {
+    color: #e4405f;
+  }
+
+  .example-2 .icon-content a[data-social="facebook"] {
+    color: #1877f2;
+  }
+
+  .example-2 .icon-content a[data-social="twiter"] {
+    color: #1da1f2;
+  }
+
+  .example-2 .icon-content a[data-social="google"] {
+    color: #db4437;
+  }
+
+  .example-2 .icon-content a:hover {
+    color: white;
+  }
+
+  .example-2 .icon-content a svg {
+    fill: currentColor;
   }
 `;
 

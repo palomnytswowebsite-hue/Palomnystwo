@@ -445,7 +445,7 @@ export default function CityPage() {
                           <th>Вхід для дітей до 3 р.</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="bg-[#FFF0DD] text-[#000000] text-center">
                         {city.mediterraneanWaterPark!.map((row, i) => (
                           <tr key={i}>
                             <td>{row.albutPrice}</td>
