@@ -16,11 +16,28 @@ interface City {
   Name: string;
   Country: string[];
   CountrySlug: string[];
+
   img1?: string;
   img2?: string;
   img3?: string;
   img4?: string;
   img5?: string;
+  img6?: string;
+  img7?: string;
+  img8?: string;
+  img9?: string;
+  img10?: string;
+
+  imgName1?: string;
+  imgName2?: string;
+  imgName3?: string;
+  imgName4?: string;
+  imgName5?: string;
+  imgName6?: string;
+  imgName7?: string;
+  imgName8?: string;
+  imgName9?: string;
+  imgName10?: string;
 }
 
 export default function CountryGalleryPage() {
@@ -55,19 +72,22 @@ export default function CountryGalleryPage() {
       );
 
       const imgs = filtered.flatMap((city) => {
-        const list = [
-          city.img1,
-          city.img2,
-          city.img3,
-          city.img4,
-          city.img5,
-        ].filter(Boolean);
+        const list: { img: string; title: string; country: string }[] = [];
 
-        return list.map((img) => ({
-          img: img!,
-          title: city.Name,
-          country: city.Country?.[0] || "",
-        }));
+        for (let i = 1; i <= 20; i++) {
+          const img = (city as any)[`img${i}`];
+          const title = (city as any)[`imgName${i}`];
+
+          if (img) {
+            list.push({
+              img,
+              title: title || city.Name,
+              country: city.Country?.[0] || "",
+            });
+          }
+        }
+
+        return list;
       });
 
       setImages(imgs);
@@ -85,39 +105,33 @@ export default function CountryGalleryPage() {
     <div>
       <NavLinks />
       <NavMenu />
+
       <h1 className="marmelad-font bg-[#E6D8C3] m-0 p-2.5 text-3xl font-bold text-center text-[#5D866C]">
         Тури для {countryName}
       </h1>
-      <div className="max-w-7xl mx-auto p-10">
-        {/* 🇺🇦 Українська назва */}
 
-        {/* Pinterest layout */}
+      <div className="max-w-7xl mx-auto p-10">
+        {/* Pinterest / National Geographic layout */}
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
           {images.map((img, i) => (
             <div
               key={i}
-              className="relative mb-4 break-inside-avoid group cursor-pointer"
+              className="relative mb-4 break-inside-avoid overflow-hidden rounded-xl group cursor-pointer"
             >
               <img
                 src={img.img}
-                alt={img.title}
+                alt={`${img.title} ${img.country}`}
+                loading="lazy"
                 onClick={() => setSelectedImage(img.img)}
-                className="w-full rounded-xl transition duration-300 group-hover:scale-105"
+                className="w-full transition duration-500 group-hover:scale-110"
               />
 
-              {/* overlay */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition rounded-xl flex items-center justify-center">
-                <button
-                  onClick={() => setSelectedImage(img.img)}
-                  className="opacity-0 group-hover:opacity-100 bg-white text-black px-4 py-2 rounded-full text-sm font-semibold transition"
-                >
-                  Дивитись фото
-                </button>
-              </div>
-
-              <div className="p-2">
-                <h3 className="font-semibold">{img.title}</h3>
-                <p className="text-sm opacity-60">{img.country}</p>
+              {/* overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
+                <div className="text-white">
+                  <h3 className="text-lg font-bold">{img.title}</h3>
+                  <p className="text-sm opacity-80">{img.country}</p>
+                </div>
               </div>
             </div>
           ))}
@@ -127,7 +141,7 @@ export default function CountryGalleryPage() {
       {/* FULLSCREEN IMAGE */}
       {selectedImage && (
         <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
           onClick={() => setSelectedImage(null)}
         >
           <img

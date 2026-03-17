@@ -46,6 +46,12 @@ interface City {
   img3?: string;
   img4?: string;
   img5?: string;
+  img6?: string;
+  img7?: string;
+  img8?: string;
+  img9?: string;
+  img10?: string;
+  img11?: string;
   chatInfo?: string;
   RouteBy?: string;
   Confession?: string[];
@@ -214,9 +220,19 @@ export default function CityPage() {
 
   if (!city) return <p className="text-center mt-10">Тур не знайдено</p>;
 
-  const images = [city.img1, city.img2, city.img3, city.img4, city.img5].filter(
-    hasText,
-  );
+  const images = [
+    city.img1,
+    city.img2,
+    city.img3,
+    city.img4,
+    city.img5,
+    city.img6,
+    city.img7,
+    city.img8,
+    city.img9,
+    city.img10,
+    city.img11,
+  ].filter(hasText);
 
   return (
     <div>
