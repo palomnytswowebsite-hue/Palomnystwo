@@ -11,34 +11,23 @@ import ScrollToTop from "@/app/Components/ScrollToTop";
 import { FAB } from "@/app/Components/FAB";
 import { Footer } from "@/app/Components/footer";
 
+/* ================= TYPES ================= */
+
 interface City {
   id: string;
   Name: string;
   Country: string[];
   CountrySlug: string[];
-
-  img1?: string;
-  img2?: string;
-  img3?: string;
-  img4?: string;
-  img5?: string;
-  img6?: string;
-  img7?: string;
-  img8?: string;
-  img9?: string;
-  img10?: string;
-
-  imgName1?: string;
-  imgName2?: string;
-  imgName3?: string;
-  imgName4?: string;
-  imgName5?: string;
-  imgName6?: string;
-  imgName7?: string;
-  imgName8?: string;
-  imgName9?: string;
-  imgName10?: string;
+  [key: string]: any;
 }
+
+interface ImageItem {
+  img: string;
+  title: string;
+  country: string;
+}
+
+/* ================= PAGE ================= */
 
 export default function CountryGalleryPage() {
   const params = useParams();
@@ -47,89 +36,177 @@ export default function CountryGalleryPage() {
     ? params.country[0]
     : params.country;
 
-  const countrySlug = countryParam?.toLowerCase() || "";
+  const countrySlug = countryParam?.toLowerCase().trim() || "";
 
-  const [images, setImages] = useState<
-    { img: string; title: string; country: string }[]
-  >([]);
+  const [images, setImages] = useState<ImageItem[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [start, setStart] = useState({ x: 0, y: 0 });
+
   const [loading, setLoading] = useState(true);
+
+  /* ================= LOAD DATA ================= */
 
   useEffect(() => {
     const loadCities = async () => {
-      const snap = await getDocs(collection(db, "Cities"));
+      try {
+        const snap = await getDocs(collection(db, "Cities"));
 
-      const allCities: City[] = snap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as City[];
+        const allCities: City[] = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as City[];
 
-      const filtered = allCities.filter(
-        (city) =>
-          Array.isArray(city.CountrySlug) &&
-          city.CountrySlug.some((slug) => slug.toLowerCase() === countrySlug),
-      );
+        const filtered = allCities.filter(
+          (city) =>
+            Array.isArray(city.CountrySlug) &&
+            city.CountrySlug.some(
+              (slug) => slug?.toLowerCase().trim() === countrySlug,
+            ),
+        );
 
-      const imgs = filtered.flatMap((city) => {
-        const list: { img: string; title: string; country: string }[] = [];
+        const imgs = filtered.flatMap((city) => {
+          const list: ImageItem[] = [];
 
-        for (let i = 1; i <= 20; i++) {
-          const img = (city as any)[`img${i}`];
-          const title = (city as any)[`imgName${i}`];
+          Object.keys(city).forEach((key) => {
+            const value = city[key];
 
-          if (img) {
+            if (
+              key.toLowerCase().includes("img") &&
+              typeof value === "string" &&
+              value.startsWith("http")
+            ) {
+              list.push({
+                img: value,
+                title: city.Name,
+                country: city.Country?.[0] || "",
+              });
+            }
+          });
+
+          if (list.length === 0) {
             list.push({
-              img,
-              title: title || city.Name,
+              img: "https://via.placeholder.com/600x400",
+              title: city.Name,
               country: city.Country?.[0] || "",
             });
           }
-        }
 
-        return list;
-      });
+          return list;
+        });
 
-      setImages(imgs);
-      setLoading(false);
+        setImages(imgs);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (countrySlug) loadCities();
   }, [countrySlug]);
 
-  if (loading) return <p>Завантаження галереї...</p>;
+  const selectedImage = selectedIndex !== null ? images[selectedIndex] : null;
 
-  const countryName = images[0]?.country || "";
+  /* ================= RESET ZOOM ================= */
+
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    }
+  }, [selectedIndex]);
+
+  /* ================= KEYBOARD ================= */
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (selectedIndex === null) return;
+
+      if (e.key === "Escape") setSelectedIndex(null);
+
+      if (e.key === "ArrowRight") {
+        setSelectedIndex((prev) =>
+          prev !== null ? (prev + 1) % images.length : null,
+        );
+      }
+
+      if (e.key === "ArrowLeft") {
+        setSelectedIndex((prev) =>
+          prev !== null ? (prev - 1 + images.length) % images.length : null,
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selectedIndex, images.length]);
+
+  /* ================= ZOOM ================= */
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const newScale = scale - e.deltaY * 0.001;
+    setScale(Math.min(Math.max(1, newScale), 4));
+  };
+
+  /* ================= DRAG ================= */
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    setPosition({
+      x: e.clientX - start.x,
+      y: e.clientY - start.y,
+    });
+  };
+
+  const handleMouseUp = () => setIsDragging(false);
+
+  /* ================= UI ================= */
+
+  if (loading) return <p className="text-center mt-10">Завантаження...</p>;
+
+  const countryName = images[0]?.country || "Тур";
 
   return (
     <div>
       <NavLinks />
       <NavMenu />
 
-      <h1 className="marmelad-font bg-[#E6D8C3] m-0 p-2.5 text-3xl font-bold text-center text-[#5D866C]">
-        Тури для {countryName}
+      <h1 className="marmelad-font bg-[#E6D8C3] p-3 text-3xl text-center text-[#5D866C]">
+        Галерея: {countryName}
       </h1>
 
-      <div className="max-w-7xl mx-auto p-10">
-        {/* Pinterest / National Geographic layout */}
+      <div className="max-w-7xl mx-auto p-6">
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
           {images.map((img, i) => (
             <div
               key={i}
-              className="relative mb-4 break-inside-avoid overflow-hidden rounded-xl group cursor-pointer"
+              className="relative mb-4 break-inside-avoid rounded-xl overflow-hidden cursor-pointer group"
             >
               <img
                 src={img.img}
-                alt={`${img.title} ${img.country}`}
+                alt={img.title}
                 loading="lazy"
-                onClick={() => setSelectedImage(img.img)}
-                className="w-full transition duration-500 group-hover:scale-110"
+                onClick={() => setSelectedIndex(i)}
+                className="w-full transition duration-500 ease-out group-hover:scale-110"
               />
 
-              {/* overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
-                <div className="text-white">
-                  <h3 className="text-lg font-bold">{img.title}</h3>
+              {/* GLASS EFFECT */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 bg-gradient-to-t from-black/40 via-transparent to-transparent">
+                <div className="w-full rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 p-4 text-white shadow-xl transform translate-y-5 group-hover:translate-y-0 transition-all duration-300">
+                  <h3 className="font-semibold text-lg">{img.title}</h3>
                   <p className="text-sm opacity-80">{img.country}</p>
                 </div>
               </div>
@@ -138,16 +215,63 @@ export default function CountryGalleryPage() {
         </div>
       </div>
 
-      {/* FULLSCREEN IMAGE */}
+      {/* MODAL */}
       {selectedImage && (
         <div
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
-          onClick={() => setSelectedImage(null)}
+          className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-50"
+          onClick={() => setSelectedIndex(null)}
         >
-          <img
-            src={selectedImage}
-            className="max-h-[90%] max-w-[90%] rounded-xl"
-          />
+          <button className="absolute top-5 right-5 text-white text-3xl">
+            ✕
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedIndex((prev) =>
+                prev !== null
+                  ? (prev - 1 + images.length) % images.length
+                  : null,
+              );
+            }}
+            className="absolute left-5 text-white text-3xl"
+          >
+            ←
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedIndex((prev) =>
+                prev !== null ? (prev + 1) % images.length : null,
+              );
+            }}
+            className="absolute right-5 text-white text-3xl"
+          >
+            →
+          </button>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            className="cursor-grab"
+          >
+            <img
+              src={selectedImage.img}
+              className="max-h-[80vh] max-w-[90vw] rounded-xl"
+              style={{
+                transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+              }}
+            />
+          </div>
+
+          <div className="text-white mt-4 text-center">
+            <h2 className="text-xl font-bold">{selectedImage.title}</h2>
+            <p>{selectedImage.country}</p>
+          </div>
         </div>
       )}
 

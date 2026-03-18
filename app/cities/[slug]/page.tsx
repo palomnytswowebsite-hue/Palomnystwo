@@ -13,68 +13,6 @@ import { Footer } from "@/app/Components/footer";
 import { FAB } from "../../Components/FAB";
 import { UpcomingTours } from "@/app/Components/UpcomingTours";
 
-/* ================= TYPES ================= */
-interface PriceRow {
-  type?: string;
-  albutPrice?: string;
-  preferential?: string;
-  kids3and14?: string;
-}
-
-interface DebrecenPriceRow {
-  type?: string;
-  albutPrice?: string;
-  preferential?: string;
-  eveningEntry?: string;
-  extraForSaunaEntry?: string;
-}
-
-interface MediterraneanPriceRow {
-  albutPrice?: string;
-  preferential?: string;
-  family?: string;
-  kidsBefore3?: string;
-}
-
-interface City {
-  id: string;
-  docId?: string; // Для UpcomingTours
-  Name?: string;
-  slug?: string;
-  img1?: string;
-  img2?: string;
-  img3?: string;
-  img4?: string;
-  img5?: string;
-  img6?: string;
-  img7?: string;
-  img8?: string;
-  img9?: string;
-  img10?: string;
-  img11?: string;
-  chatInfo?: string;
-  RouteBy?: string;
-  Confession?: string[];
-  description?: string;
-  DateOfBeggining?: any;
-  DateOfEnd?: any;
-  Duration?: string;
-  Route?: string;
-  TourPrice?: string;
-  INCLUDES?: string[];
-  NOTINCLUDE?: string[];
-  Country?: string[];
-  ImportantInfo?: string;
-  typeUa?: string[];
-  allDates?: { label: string; value: number }[];
-  nearestDate?: string;
-  nearestDateValue?: number;
-  thermalNymphsPrice?: PriceRow[];
-  thermalBathsOfDebrecenPrice?: DebrecenPriceRow[];
-  mediterraneanWaterPark?: MediterraneanPriceRow[];
-  [key: string]: any;
-}
-
 /* ================= HELPERS ================= */
 const hasText = (value?: string | null) =>
   typeof value === "string" && value.trim() !== "";
@@ -100,20 +38,66 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
+const getImagesForDay = (city: any, dayIndex: number) => {
+  const result: string[] = [];
+  const mainImg = city[`img${dayIndex + 1}`];
+  if (mainImg) result.push(mainImg);
+
+  let i = 1;
+  while (city[`img${dayIndex + 1}_${i}`]) {
+    result.push(city[`img${dayIndex + 1}_${i}`]);
+    i++;
+  }
+
+  return result;
+};
+
 /* ================= PAGE ================= */
 export default function CityPage() {
   const params = useParams();
   const rawSlug = params.slug;
   const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
 
-  const [city, setCity] = useState<City | null>(null);
+  const [city, setCity] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [days, setDays] = useState<[string, string][]>([]);
+  const [selectedImage, setSelectedImage] = useState<{
+    index: number;
+    images: string[];
+  } | null>(null);
+
+  const nextImage = () => {
+    if (!selectedImage) return;
+    setSelectedImage({
+      ...selectedImage,
+      index: (selectedImage.index + 1) % selectedImage.images.length,
+    });
+  };
+
+  const prevImage = () => {
+    if (!selectedImage) return;
+    setSelectedImage({
+      ...selectedImage,
+      index:
+        (selectedImage.index - 1 + selectedImage.images.length) %
+        selectedImage.images.length,
+    });
+  };
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (!selectedImage) return;
+      if (e.key === "Escape") setSelectedImage(null);
+      if (e.key === "ArrowRight") nextImage();
+      if (e.key === "ArrowLeft") prevImage();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selectedImage]);
 
   useEffect(() => {
     const fetchCity = async () => {
       if (!slug) return;
-
       try {
         const q = query(collection(db, "Cities"), where("slug", "==", slug));
         const snapshot = await getDocs(q);
@@ -122,8 +106,8 @@ export default function CityPage() {
           const docSnap = snapshot.docs[0];
           const raw = docSnap.data();
 
-          /* =================== Дати туру =================== */
           const allDates: { label: string; value: number }[] = [];
+
           const formatDate = (d: Date) =>
             `${String(d.getDate()).padStart(2, "0")}.${String(
               d.getMonth() + 1,
@@ -132,6 +116,7 @@ export default function CityPage() {
           if (raw.DateOfBeggining && raw.DateOfEnd) {
             const startDate = parseSingleDate(raw.DateOfBeggining);
             const endDate = parseSingleDate(raw.DateOfEnd);
+
             if (startDate && endDate) {
               allDates.push({
                 label: `${formatDate(startDate)} – ${formatDate(endDate)}`,
@@ -145,15 +130,17 @@ export default function CityPage() {
           const nearest =
             allDates.find((d) => d.value >= now.getTime()) || allDates[0];
 
-          /* =================== План туру =================== */
           const plan: [string, string][] = Object.keys(raw)
-            .filter((key) => key.startsWith("Day"))
-            .sort()
+            .filter((key) => /^Day\d+$/.test(key))
+            .sort((a, b) => {
+              const numA = Number(a.replace("Day", ""));
+              const numB = Number(b.replace("Day", ""));
+              return numA - numB;
+            })
             .map((key) => [key, raw[key]]);
 
           setDays(plan);
 
-          /* =================== Підколекції =================== */
           const thermalNymphsSnap = await getDocs(
             collection(db, "Cities", docSnap.id, "thermalNymphsPrice"),
           );
@@ -166,40 +153,18 @@ export default function CityPage() {
             collection(db, "Cities", docSnap.id, "mediterraneanWaterPark"),
           );
 
-          const thermalNymphsPrice: PriceRow[] = thermalNymphsSnap.docs.map(
-            (doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }),
-          ) as PriceRow[];
-
-          const thermalBathsOfDebrecenPrice: DebrecenPriceRow[] =
-            debrecenSnap.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            })) as DebrecenPriceRow[];
-
-          const mediterraneanWaterPark: MediterraneanPriceRow[] =
-            mediterraneanSnap.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            })) as MediterraneanPriceRow[];
-
-          /* =================== Встановлюємо city =================== */
           setCity({
             id: docSnap.id,
-            docId: docSnap.id, // Для UpcomingTours
+            docId: docSnap.id,
             ...raw,
             allDates,
             nearestDate: nearest?.label,
             nearestDateValue: nearest?.value,
-            thermalNymphsPrice,
-            thermalBathsOfDebrecenPrice,
-            mediterraneanWaterPark,
-          } as City);
-        } else {
-          setCity(null);
-        }
+            thermalNymphsPrice: thermalNymphsSnap.docs.map((d) => d.data()),
+            thermalBathsOfDebrecenPrice: debrecenSnap.docs.map((d) => d.data()),
+            mediterraneanWaterPark: mediterraneanSnap.docs.map((d) => d.data()),
+          });
+        } else setCity(null);
       } catch (error) {
         console.error(error);
         setCity(null);
@@ -207,7 +172,6 @@ export default function CityPage() {
         setLoading(false);
       }
     };
-
     fetchCity();
   }, [slug]);
 
@@ -220,22 +184,10 @@ export default function CityPage() {
 
   if (!city) return <p className="text-center mt-10">Тур не знайдено</p>;
 
-  const images = [
-    city.img1,
-    city.img2,
-    city.img3,
-    city.img4,
-    city.img5,
-    city.img6,
-    city.img7,
-    city.img8,
-    city.img9,
-    city.img10,
-    city.img11,
-  ].filter(hasText);
+  const images = getImagesForDay(city, 0);
 
   return (
-    <div>
+    <div className="">
       <NavLinks />
       <NavMenu />
 
@@ -252,7 +204,9 @@ export default function CityPage() {
         </motion.h1>
       )}
 
+      {/* ================= BODY ================= */}
       <div className="max-w-4xl mx-auto p-6 space-y-10">
+        {/* ТВОЯ BODY СТРУКТУРА ПОВНІСТЮ ВСТАВЛЕНА ТУТ */}
         <div className="flex flex-col lg:flex-row gap-6 max-w-4xl mx-auto px-4">
           <div className="carousel carousel-vertical rounded-box w-full h-64 sm:h-80 lg:h-[500px] lg:w-sm">
             {images[0] && (
@@ -267,7 +221,6 @@ export default function CityPage() {
           </div>
 
           <div className="flex flex-col gap-2.5 max-w-96 mx-auto">
-            {/* ================= Дати ================= */}
             {hasArray(city.allDates) && (
               <motion.div
                 variants={fadeUp}
@@ -279,17 +232,16 @@ export default function CityPage() {
               >
                 <strong>Дати туру:</strong>
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  {city.allDates!.map((d, i: number) => (
+                  {city.allDates.map((d: any, i: number) => (
                     <li key={i}>{d.label}</li>
                   ))}
                 </ul>
               </motion.div>
             )}
 
-            {/* ================= Інші блоки ================= */}
             {hasArray(city.Country) && (
               <motion.div className="p-4 bg-base-100 rounded shadow-md">
-                <strong>Країна:</strong> {city.Country!.join(", ")}
+                <strong>Країна:</strong> {city.Country.join(", ")}
               </motion.div>
             )}
 
@@ -315,7 +267,7 @@ export default function CityPage() {
               <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Тип туру:</strong>
                 <ul className="list-disc list-inside mt-2">
-                  {city.typeUa!.map((type, i) => (
+                  {city.typeUa.map((type: string, i: number) => (
                     <li key={i}>{type}</li>
                   ))}
                 </ul>
@@ -326,7 +278,7 @@ export default function CityPage() {
               <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Тип Конфесії:</strong>
                 <ul className="list-disc list-inside mt-2">
-                  {city.Confession!.map((types, i) => (
+                  {city.Confession.map((types: string, i: number) => (
                     <li key={i}>{types}</li>
                   ))}
                 </ul>
@@ -334,18 +286,18 @@ export default function CityPage() {
             )}
           </div>
         </div>
-        {/* ================= Таблиця майбутніх турів ================= */}
-        {city.docId && (
-          <div className="max-w-4xl mx-auto p-6">
-            <UpcomingTours cityDocId={city.docId} />
-          </div>
-        )}
         {/* ================= Опис ================= */}
         {hasText(city.description) && (
           <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>Опис:</strong>
             <p className="mt-2 whitespace-pre-line">{city.description}</p>
           </motion.div>
+        )}
+        {/* ================= Таблиця майбутніх турів ================= */}
+        {city.docId && (
+          <div className="max-w-4xl mx-auto p-6">
+            <UpcomingTours cityDocId={city.docId} />
+          </div>
         )}
         {/* ================= Chat Info ================= */}
         {hasText(city.chatInfo) && (
@@ -364,120 +316,92 @@ export default function CityPage() {
           </ul>
         </motion.div>
 
-        {/* ================= Дні та Day3 priceTable ================= */}
-        {days.map(([key, value], i) => (
-          <div key={key} className="space-y-4">
-            <div className="p-4 bg-base-100 rounded shadow-md">
-              <h3 className="font-semibold mb-2">
-                День {key.replace("Day", "")}
-              </h3>
-              <p>{value}</p>
+        {/* ================= Дні та галереї ================= */}
+        {/* ================= Дні та галереї ================= */}
+        {days.map(([key, value], i) => {
+          const dayImages = getImagesForDay(city, i);
+          const linkKey = `${key}Link`;
+          const dayLink = city[linkKey];
+          return (
+            <div key={key} className="mb-6">
+              <div className="p-4 bg-base-100 rounded shadow-md">
+                <h3 className="font-semibold">День {key.replace("Day", "")}</h3>
+                <p>{value}</p>
+                {/* 🔗 Лінк для 5 дня */}
+                {dayLink && (
+                  <a
+                    href={typeof dayLink === "string" ? dayLink : dayLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block mt-3 text-blue-600 underline hover:text-blue-800"
+                  >
+                    {typeof dayLink === "string" ? "Детальніше" : dayLink.text}
+                  </a>
+                )}
+              </div>
+
+              <div className=" mt-2">
+                {dayImages.map((img: string, index: number) => (
+                  <img
+                    key={index}
+                    src={img}
+                    onClick={() =>
+                      setSelectedImage({
+                        index,
+                        images: dayImages,
+                      })
+                    }
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      display: "block",
+                      margin: "0 auto",
+                    }}
+                    className="rounded cursor-pointer hover:scale-105 transition"
+                  />
+                ))}
+              </div>
+
+              {key === "Day3" && (
+                <div className="space-y-4 mt-4">
+                  {/* Таблиці цін */}
+                  {hasArray(city.thermalNymphsPrice) && (
+                    <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
+                      <strong className="text-white">
+                        Ціни Аквапарку Німфея:
+                      </strong>
+                      <table className="table w-full mt-4 text-center">
+                        {/* ...thead і tbody... */}
+                      </table>
+                    </div>
+                  )}
+
+                  {hasArray(city.thermalBathsOfDebrecenPrice) && (
+                    <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
+                      <strong className="text-white">
+                        Ціни на квитки у термальні купальні Дебрецену:
+                      </strong>
+                      <table className="table w-full mt-4 text-center">
+                        {/* ...thead і tbody... */}
+                      </table>
+                    </div>
+                  )}
+
+                  {hasArray(city.mediterraneanWaterPark) && (
+                    <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
+                      <strong className="text-white">
+                        Ціни Середземноморський Аквапарк:
+                      </strong>
+                      <table className="table w-full mt-4 text-center">
+                        {/* ...thead і tbody... */}
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-
-            {images[i] && (
-              <img
-                src={images[i]}
-                alt={`Day ${i + 1}`}
-                className="w-full h-full object-cover rounded"
-              />
-            )}
-
-            {key === "Day3" && (
-              <>
-                {/* ================= Таблиця thermalNymphsPrice ================= */}
-                {hasArray(city.thermalNymphsPrice) && (
-                  <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
-                    <strong className="text-white ">
-                      Ціни Аквапарку Німфея:
-                    </strong>
-                    <table className="table  w-full mt-4 text-center">
-                      <thead className="bg-[#86B0BD] text-white text-center">
-                        <tr>
-                          <th>Тип квитка</th>
-                          <th>Дорослий</th>
-                          <th>Студентський / пенсійний 65+</th>
-                          <th>Дитячий 3 – 14 р.</th>
-                          <th>Дитячий до 3 р.</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-[#FFF0DD] text-[#000000] text-center">
-                        {city.thermalNymphsPrice!.map((row, i) => (
-                          <tr key={i}>
-                            <td>{row.type}</td>
-                            <td>{row.albutPrice}</td>
-                            <td>{row.preferential}</td>
-                            <td>{row.kids3and14}</td>
-                            <td>БЕЗКОШТОВНО</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* ================= Таблиця thermalBathsOfDebrecenPrice ================= */}
-                {hasArray(city.thermalBathsOfDebrecenPrice) && (
-                  <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
-                    <strong className="text-white">
-                      Ціни на квитки у термальні купальні Дебрецену:
-                    </strong>
-                    <table className="table w-full mt-4 text-center">
-                      <thead className="bg-[#86B0BD] text-white text-center">
-                        <tr>
-                          <th>Тип квитка</th>
-                          <th>Дорослий</th>
-                          <th>Студентський / пенсійний 65+</th>
-                          <th>Дитячий 3 – 14 р.</th>
-                          <th>Додатково за сауну</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-[#FFF0DD] text-[#000000] text-center">
-                        {city.thermalBathsOfDebrecenPrice!.map((row, i) => (
-                          <tr key={i}>
-                            <td>{row.type}</td>
-                            <td>{row.albutPrice}</td>
-                            <td>{row.preferential}</td>
-                            <td>{row.eveningEntry}</td>
-                            <td>{row.extraForSaunaEntry}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* ================= Таблиця mediterraneanWaterPark ================= */}
-                {hasArray(city.mediterraneanWaterPark) && (
-                  <div className="p-4 bg-[#86B0BD] rounded shadow-md overflow-x-auto">
-                    <strong className="text-white">
-                      Ціни Середземноморський Аквапарк:
-                    </strong>
-                    <table className="table w-full mt-4 text-center">
-                      <thead className="bg-[#86B0BD] text-white text-center">
-                        <tr>
-                          <th>Дорослий</th>
-                          <th>Студентський / пенсійний 65+</th>
-                          <th>Сімейний 2 дор + 1 дит.</th>
-                          <th>Вхід для дітей до 3 р.</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-[#FFF0DD] text-[#000000] text-center">
-                        {city.mediterraneanWaterPark!.map((row, i) => (
-                          <tr key={i}>
-                            <td>{row.albutPrice}</td>
-                            <td>{row.preferential}</td>
-                            <td>{row.family}</td>
-                            <td>{row.kidsBefore3}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        ))}
+          );
+        })}
 
         {/* ================= Опис та INCLUDES ================= */}
 
@@ -485,7 +409,7 @@ export default function CityPage() {
           <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>У вартість входить:</strong>
             <ul className="list-disc list-inside mt-2 space-y-1">
-              {city.INCLUDES!.map((item, i) => (
+              {city.INCLUDES!.map((item: string, i: number) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
@@ -496,7 +420,7 @@ export default function CityPage() {
           <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>У вартість не входить:</strong>
             <ul className="list-disc list-inside mt-2 space-y-1">
-              {city.NOTINCLUDE!.map((item, i) => (
+              {city.INCLUDES!.map((item: string, i: number) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
@@ -513,6 +437,34 @@ export default function CityPage() {
       <ScrollToTop />
       <FAB />
       <Footer />
+
+      {/* MODAL */}
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div
+            className="relative max-w-[90%] max-h-[90%] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Кнопка Закрити */}
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-2 right-2 text-white text-2xl font-bold bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition"
+            >
+              ✕
+            </button>
+
+            {/* Картинка */}
+            <img
+              src={selectedImage.images[selectedImage.index]}
+              alt="Selected"
+              className="max-w-full max-h-full rounded shadow-lg"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

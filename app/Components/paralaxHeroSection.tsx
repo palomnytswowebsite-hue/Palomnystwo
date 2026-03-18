@@ -53,20 +53,12 @@ export default function ParalaxHeroSection({
       <section className="hero relative  flex items-center justify-center text-white">
         <div ref={bgBackRef} className="absolute inset-0 bg bg-back" />
         <div ref={bgFrontRef} className="absolute inset-0 bg bg-front" />
-        <h1
+        {/* <h1
           className="flex flex-col items-center text-6xl relative z-10"
           ref={textRef}
         >
-          <div>
-            <img
-              className="rounded-[120px]
-                h-64 w-64 mb-2"
-              src="https://res.cloudinary.com/dwl1expbx/image/upload/v1772635040/photo_2026-03-04_14-51-37_ldm75f.jpg"
-              alt=""
-            />
-          </div>
           AVE MARIA
-        </h1>
+        </h1> */}
       </section>
 
       <section className="content ">
