@@ -18,6 +18,7 @@ export interface City {
   id: string;
   Name: string;
   slug: string;
+  img0?: string;
   img1?: string;
   Country: string[];
   CountrySlug: string[];
