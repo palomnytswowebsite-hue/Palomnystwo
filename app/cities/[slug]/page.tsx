@@ -324,24 +324,26 @@ export default function CityPage() {
         {/* ================= Дні та галереї ================= */}
         {days.map(([key, value], i) => {
           const dayImages = getImagesForDay(city, i);
-          const linkKey = `${key}Link`;
-          const dayLink = city[linkKey];
+          const linksKey = `${key}Link`;
+          const dayLinks = city[linksKey];
           return (
             <div key={key} className="mb-6">
               <div className="p-4 bg-base-100 rounded shadow-md">
                 <h3 className="font-semibold">День {key.replace("Day", "")}</h3>
                 <p>{value}</p>
                 {/* 🔗 Лінк для 5 дня */}
-                {dayLink && (
-                  <a
-                    href={typeof dayLink === "string" ? dayLink : dayLink.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block mt-3 text-blue-600 underline hover:text-blue-800"
-                  >
-                    {typeof dayLink === "string" ? "Детальніше" : dayLink.text}
-                  </a>
-                )}
+                {Array.isArray(dayLinks) &&
+                  dayLinks.map((link, index) => (
+                    <a
+                      key={index}
+                      href={typeof link === "string" ? link : link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block mt-3 text-blue-600 underline hover:text-blue-800"
+                    >
+                      {typeof link === "string" ? "Детальніше" : link.text}
+                    </a>
+                  ))}
               </div>
 
               <div className=" mt-2">
