@@ -17,6 +17,7 @@ export const CardCity = ({ city }: Props) => {
         <figure className="px-10 pt-10">
           <img
             src={
+              city.img0 ||
               city.img1 ||
               "https://res.cloudinary.com/dwl1expbx/image/upload/v1770135112/grayFotoCity_a3ccak.jpg"
             }

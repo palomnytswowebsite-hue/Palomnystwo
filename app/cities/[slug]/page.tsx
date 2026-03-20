@@ -184,8 +184,16 @@ export default function CityPage() {
 
   if (!city) return <p className="text-center mt-10">Тур не знайдено</p>;
 
-  const images = getImagesForDay(city, 0);
+  const getMainImages = (city: any) => {
+    const result: string[] = [];
 
+    if (city.img0) result.push(city.img0);
+    if (city.img1) result.push(city.img1);
+
+    return result;
+  };
+
+  const images = getMainImages(city);
   return (
     <div className="">
       <NavLinks />
@@ -209,15 +217,11 @@ export default function CityPage() {
         {/* ТВОЯ BODY СТРУКТУРА ПОВНІСТЮ ВСТАВЛЕНА ТУТ */}
         <div className="flex flex-col lg:flex-row gap-6 max-w-4xl mx-auto px-4">
           <div className="carousel carousel-vertical rounded-box w-full h-64 sm:h-80 lg:h-[500px] lg:w-sm">
-            {images[0] && (
-              <div className="carousel-item h-full">
-                <img
-                  src={images[0]}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
+            {images.map((img, i) => (
+              <div key={i} className="carousel-item h-full">
+                <img src={img} alt="" className="w-full h-full object-cover" />
               </div>
-            )}
+            ))}
           </div>
 
           <div className="flex flex-col gap-2.5 max-w-96 mx-auto">

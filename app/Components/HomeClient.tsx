@@ -122,6 +122,7 @@ async function fetchAllCities(): Promise<City[]> {
         id: cityId,
         Name: data.Name || cityId,
         slug: data.slug || cityId,
+        img0: data.img0 || "",
         img1: data.img1 || "",
         Country: data.Country || [],
         CountrySlug: data.CountrySlug || [],
