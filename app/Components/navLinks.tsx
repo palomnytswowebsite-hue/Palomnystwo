@@ -107,7 +107,7 @@ const NavLinks = () => {
 
           <li className="icon-content ">
             <a
-              href="https://www.youtube.com/@aveisusimaria"
+              href="https://www.youtube.com/@AveIsusiMaria"
               aria-label="youtube"
               data-social="youtube"
               target="_blank"
@@ -130,7 +130,7 @@ const NavLinks = () => {
             <div className="tooltip">Youtube</div>
           </li>
         </ul>
-        <ul className="flex  flex-row gap-1.5 ">
+        <ul className="flex flex-col md:flex-row gap-1.5">
           <li className="flex items-center ml-1.5 place-items-center text-[#118DF0] hover:text-[#5D866C] transition-colors duration-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +144,7 @@ const NavLinks = () => {
                 clipRule="evenodd"
               />
             </svg>
-            050 101 07 42
+            <a href="tel:+380501010742">050 101 07 42</a>
           </li>
           <li className="flex items-center place-items-center ml-1.5 text-[#118DF0] hover:text-[#5D866C] transition-colors duration-300 ">
             <svg

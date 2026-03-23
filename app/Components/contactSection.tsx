@@ -81,17 +81,6 @@ export const ContactSection = () => {
               </a>
 
               <a
-                href="#"
-                className="flex items-center gap-3 hover:text-[#86B0BD] transition"
-              >
-                <img
-                  src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773215658/pngwing.com_3_wkq6jr.png"
-                  width="28"
-                />
-                WhatsApp
-              </a>
-
-              <a
                 href="https://m.me/AVEMARIAUA"
                 target="_blank"
                 rel="noopener noreferrer"

@@ -110,26 +110,6 @@ export default function ContactPage() {
                 className="flex justify-center items-center gap-1.5"
               >
                 <img
-                  src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773215658/pngwing.com_3_wkq6jr.png"
-                  alt="WhatsApp Icons"
-                  height={"30px"}
-                  width={"30px"}
-                />
-                <a
-                  href="https://www.instagram.com/avemaria.palomnyk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                  target="_blank"
-                  className="text-black hover:text-[#86B0BD] transition-colors duration-300"
-                  rel="noopener noreferrer"
-                >
-                  WhatsApp
-                </a>
-              </button>
-              <br />
-              <button
-                type="submit"
-                className="flex justify-center items-center gap-1.5"
-              >
-                <img
                   src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773216918/vecteezy_messenger-png-icon_16716477_elok8j.png"
                   alt="Messenger Icons"
                   height={"30px"}

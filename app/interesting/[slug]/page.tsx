@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
 import { useParams } from "next/navigation";
-
+import { motion } from "framer-motion";
 import NavLinks from "@/app/Components/navLinks";
 import { NavMenu } from "@/app/Components/navMenu";
 import { Footer } from "@/app/Components/footer";
@@ -15,6 +15,7 @@ interface Place {
   id: string;
   Name: string;
   slug: string;
+  img1: string;
   description: string;
 }
 
@@ -49,10 +50,18 @@ export default function PlaceDetailPage() {
       <NavLinks />
       <NavMenu />
 
-      <div className="max-w-4xl mx-auto p-10">
-        <h1 className="text-3xl font-bold mb-6">{place.Name}</h1>
-
-        <p className="leading-relaxed text-lg">{place.description}</p>
+      <div className="max-w-4xl  mx-auto p-10">
+        <h1 className="text-3xl text-center font-bold mb-6">{place.Name}</h1>
+        <div className="flex justify-center">
+          <img
+            src={place.img1}
+            alt={place.Name}
+            className="rounded-2xl max-w-xl w-full "
+          />
+        </div>
+        <motion.div className="p-4 bg-base-100 rounded shadow-md m-2.5">
+          <p className="leading-relaxed text-lg">{place.description}</p>
+        </motion.div>
       </div>
 
       <ScrollToTop />
