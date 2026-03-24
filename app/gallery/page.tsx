@@ -15,7 +15,6 @@ interface CountryItem {
   slug: string;
   label: string;
   img?: string;
-  count: number;
 }
 
 export default function GalleryPage() {
@@ -43,11 +42,9 @@ export default function GalleryPage() {
               slug,
               label,
               img: city.img1,
-              count: 1,
             });
           } else {
             const existing = map.get(slug)!;
-            existing.count += 1;
 
             if (!existing.img && city.img1) {
               existing.img = city.img1;
@@ -91,8 +88,6 @@ export default function GalleryPage() {
 
               <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center">
                 <h2 className="text-white text-2xl font-bold">{c.label}</h2>
-
-                <p className="text-white text-sm opacity-80">{c.count} турів</p>
               </div>
             </Link>
           ))}

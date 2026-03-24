@@ -2,7 +2,7 @@
 
 export const ContactSection = () => {
   return (
-    <div className="bg-gray-200 mt-10 py-10">
+    <div className="bg-[#FCF9EA] mt-10 py-10">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-12 px-6">
         {/* IMAGE */}
         <img
@@ -31,7 +31,7 @@ export const ContactSection = () => {
                   src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773221269/pngwing.com_6_agw4bk.png"
                   width="28"
                 />
-                <span>050 101 07 42</span>
+                <span>+380501010742</span>
               </div>
 
               <div className="flex items-center gap-3 hover:text-[#E2A16F] transition">
@@ -39,7 +39,7 @@ export const ContactSection = () => {
                   src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773221269/pngwing.com_6_agw4bk.png"
                   width="28"
                 />
-                <span>050 237 84 04</span>
+                <span>+380969355298</span>
               </div>
 
               <div className="flex items-center gap-3 hover:text-[#E2A16F] transition">
@@ -47,7 +47,7 @@ export const ContactSection = () => {
                   src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773221269/pngwing.com_6_agw4bk.png"
                   width="28"
                 />
-                <span>096 935 5298</span>
+                <span>+380507175304</span>
               </div>
             </div>
           </div>
@@ -58,7 +58,9 @@ export const ContactSection = () => {
 
             <div className="space-y-3">
               <a
-                href="#"
+                href="viber://chat?number=380501010742"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-3 hover:text-[#86B0BD] transition"
               >
                 <img
@@ -66,6 +68,30 @@ export const ContactSection = () => {
                   width="28"
                 />
                 Viber
+              </a>
+              <a
+                href="https://t.me/+380507175304"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 hover:text-[#86B0BD] transition"
+              >
+                <img
+                  src="https://res.cloudinary.com/dwl1expbx/image/upload/v1774371268/telegram-svgrepo-com_sw9msi.svg"
+                  width="28"
+                />
+                Telegram
+              </a>
+              <a
+                href="https://wa.me/380501010742"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 hover:text-[#86B0BD] transition"
+              >
+                <img
+                  src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773215658/pngwing.com_3_wkq6jr.png"
+                  width="28"
+                />
+                Whatsapp
               </a>
 
               <a

@@ -10,6 +10,10 @@ const TYPES = [
 ];
 
 const COUNTRIES = [
+  { slug: "medjugorje", label: "Меджугор’є" },
+  { slug: "romania", label: "Румунія" },
+  { slug: "albania", label: "Албанія" },
+  { slug: "croatia", label: "Хорватії" },
   { slug: "italy", label: "Італія" },
   { slug: "turkey", label: "Туреччина" },
   { slug: "france", label: "Франція" },

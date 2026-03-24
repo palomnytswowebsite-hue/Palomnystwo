@@ -9,6 +9,7 @@ import NavLinks from "@/app/Components/navLinks";
 import { NavMenu } from "@/app/Components/navMenu";
 import Loader from "@/app/Components/Loader";
 import ScrollToTop from "@/app/Components/ScrollToTop";
+import { ContactSection } from "@/app/Components/contactSection";
 import { Footer } from "@/app/Components/footer";
 import { FAB } from "../../Components/FAB";
 import { UpcomingTours } from "@/app/Components/UpcomingTours";
@@ -442,6 +443,7 @@ export default function CityPage() {
       </div>
       <ScrollToTop />
       <FAB />
+      <ContactSection />
       <Footer />
 
       {/* MODAL */}

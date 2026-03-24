@@ -131,7 +131,7 @@ const NavLinks = () => {
           </li>
         </ul>
         <ul className="flex flex-col md:flex-row gap-1.5">
-          <li className="flex items-center ml-1.5 place-items-center text-[#118DF0] hover:text-[#5D866C] transition-colors duration-300">
+          <li className="flex items-center ml-1.5 place-items-center text-[#016B61] hover:text-[#E2A16F] transition-colors duration-300">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -146,7 +146,7 @@ const NavLinks = () => {
             </svg>
             <a href="tel:+380501010742">050 101 07 42</a>
           </li>
-          <li className="flex items-center place-items-center ml-1.5 text-[#118DF0] hover:text-[#5D866C] transition-colors duration-300 ">
+          <li className="flex items-center place-items-center ml-1.5 text-[#016B61] hover:text-[#E2A16F] transition-colors duration-300 ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

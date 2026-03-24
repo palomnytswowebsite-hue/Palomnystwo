@@ -12,7 +12,7 @@ export default function ContactPage() {
       <h1 className="marmelad-font bg-[#E6D8C3] m-0 p-2.5 text-3xl font-bold text-center text-[#5D866C]">
         Контакти
       </h1>
-      <div className="flex flex-col md:flex-row justify-center  gap-8 p-8 bg-gray-200 mt-5">
+      <div className="flex flex-col md:flex-row justify-center  gap-8 p-8 bg-[#EFE9E3] mt-5">
         <img
           className="w-56 h-56 lg: w-80 h-80"
           src="https://res.cloudinary.com/dwl1expbx/image/upload/v1772632619/photo_2026-03-04_14-51-37_oetbrc.jpg"
@@ -41,7 +41,7 @@ export default function ContactPage() {
                 height={"30px"}
                 width={"30px"}
               />{" "}
-              050 101 07 42
+              +380501010742
             </p>
             <p className="mb-2 flex justify-center items-center gap-1.5 text-black hover:text-[#E2A16F] transition-colors duration-300">
               <img
@@ -50,7 +50,7 @@ export default function ContactPage() {
                 height={"30px"}
                 width={"30px"}
               />{" "}
-              050 237 84 04
+              +380969355298
             </p>
             <p className="mb-2 flex justify-center items-center gap-1.5 text-black hover:text-[#E2A16F] transition-colors duration-300">
               <img
@@ -59,7 +59,7 @@ export default function ContactPage() {
                 height={"30px"}
                 width={"30px"}
               />{" "}
-              096 935 5298
+              +380507175304
             </p>
           </div>
           <div className="">
@@ -76,12 +76,52 @@ export default function ContactPage() {
                   width={"30px"}
                 />
                 <a
-                  href="http://"
+                  href="viber://chat?number=380501010742"
                   target="_blank"
                   className="text-black hover:text-[#86B0BD]  transition-colors duration-300"
                   rel="noopener noreferrer"
                 >
                   Viber
+                </a>
+              </button>
+              <br />
+              <button
+                type="submit"
+                className="flex justify-center items-center gap-1.5"
+              >
+                <img
+                  src="https://res.cloudinary.com/dwl1expbx/image/upload/v1774371268/telegram-svgrepo-com_sw9msi.svg"
+                  alt="Telegram  Icons"
+                  height={"30px"}
+                  width={"30px"}
+                />
+                <a
+                  href="https://t.me/+380507175304"
+                  target="_blank"
+                  className="text-black hover:text-[#86B0BD] transition-colors duration-300"
+                  rel="noopener noreferrer"
+                >
+                  Telegram
+                </a>
+              </button>
+              <br />
+              <button
+                type="submit"
+                className="flex justify-center items-center gap-1.5"
+              >
+                <img
+                  src="https://res.cloudinary.com/dwl1expbx/image/upload/v1773215658/pngwing.com_3_wkq6jr.png"
+                  alt="Whatsapp Icons"
+                  height={"30px"}
+                  width={"30px"}
+                />
+                <a
+                  href="https://wa.me/380501010742"
+                  target="_blank"
+                  className="text-black hover:text-[#86B0BD]  transition-colors duration-300"
+                  rel="noopener noreferrer"
+                >
+                  Whatsapp
                 </a>
               </button>
               <br />
@@ -116,10 +156,10 @@ export default function ContactPage() {
                   width={"30px"}
                 />
                 <a
-                  href="https://www.instagram.com/avemaria.palomnyk?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                  href="https://m.me/AVEMARIAUA"
                   target="_blank"
-                  className="text-black hover:text-[#86B0BD] transition-colors duration-300"
                   rel="noopener noreferrer"
+                  className="text-black hover:text-[#86B0BD] transition-colors duration-300"
                 >
                   Messenger
                 </a>
