@@ -14,7 +14,7 @@ interface UpcomingTour {
 }
 
 interface Props {
-  cityDocId: string; // Тепер передаємо **ID документа міста**
+  cityDocId: string;
 }
 
 const fadeUp = {
@@ -31,23 +31,26 @@ export function UpcomingTours({ cityDocId }: Props) {
 
     const fetchTours = async () => {
       try {
-        console.log("CITY DOC ID USED:", cityDocId);
-
         const tableRef = collection(db, "Cities", cityDocId, "UpcomingTours");
         const snapshot = await getDocs(tableRef);
 
-        console.log("UPCOMING TOURS DOCS:", snapshot.docs);
-
-        const data: UpcomingTour[] = snapshot.docs.map((doc) => {
-          const d = doc.data();
-          return {
-            id: doc.id,
-            dates: d.dates ?? "—",
-            albutPrice: d.albutPrice ?? "—",
-            kidsBefore5: d.kidsBefore5 ?? "—",
-            kidsBefore10: d.kidsBefore10 ?? "—",
-          };
-        });
+        const data: UpcomingTour[] = snapshot.docs
+          .map((doc) => {
+            const d = doc.data();
+            return {
+              id: doc.id,
+              dates: d.dates ?? "",
+              albutPrice: d.albutPrice ?? "",
+              kidsBefore5: d.kidsBefore5 ?? "",
+              kidsBefore10: d.kidsBefore10 ?? "",
+            };
+          })
+          // 🔥 прибираємо повністю пусті рядки
+          .filter((row) => {
+            return (
+              row.dates || row.albutPrice || row.kidsBefore5 || row.kidsBefore10
+            );
+          });
 
         setRows(data);
       } catch (error) {
@@ -61,15 +64,15 @@ export function UpcomingTours({ cityDocId }: Props) {
     fetchTours();
   }, [cityDocId]);
 
-  if (loading)
+  // ⏳ Показуємо loader (за бажанням)
+  if (loading) {
     return <p className="text-center mt-6">Завантаження таблиці...</p>;
+  }
 
-  if (!rows.length)
-    return (
-      <p className="text-center mt-6">
-        Ознайомтесь з датами туру які вказані вище
-      </p>
-    );
+  // ❗ ГОЛОВНЕ: якщо нема даних → нічого не показуємо взагалі
+  if (!rows.length) {
+    return null;
+  }
 
   return (
     <motion.section
@@ -78,11 +81,12 @@ export function UpcomingTours({ cityDocId }: Props) {
       whileInView="visible"
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="w-full rounded-box border p-3.5  mx-auto bg-[#86B0BD]  px-4"
+      className="w-full rounded-box border p-3.5 mx-auto bg-[#86B0BD] px-4"
     >
       <h2 className="text-lg font-semibold text-white m-2.5 text-center">
         Найблищі дати туру
       </h2>
+
       <div className="overflow-x-auto rounded-box border bg-base-100">
         <table className="table">
           <thead className="bg-[#86B0BD] text-white text-center">
@@ -93,6 +97,7 @@ export function UpcomingTours({ cityDocId }: Props) {
               <th>Діти до 10 р.</th>
             </tr>
           </thead>
+
           <tbody className="bg-[#FFF0DD] text-black text-center">
             {rows.map((row) => (
               <tr key={row.id} className="hover">

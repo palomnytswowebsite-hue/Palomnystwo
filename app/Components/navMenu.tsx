@@ -3,12 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const TYPES = [
-  { slug: "pilgrimage", label: "Паломництва" },
-  { slug: "thermals", label: "Термали" },
-  { slug: "sea", label: "Море" },
-];
-
 const COUNTRIES = [
   { slug: "medjugorje", label: "Меджугор’є" },
   { slug: "romania", label: "Румунія" },
@@ -37,14 +31,22 @@ export const NavMenu = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // ✅ вибір типу (море / термали / паломництво)
   const updateType = (type?: string) => {
     setType?.(type);
-    if (type !== "pilgrimage") setCountry?.(undefined);
+    setCountry?.(undefined); // завжди скидаємо країну
   };
 
+  // ✅ вибір країни → автоматично паломництво
   const updateCountry = (country?: string) => {
     setType?.("pilgrimage");
     setCountry?.(country);
+  };
+
+  // ✅ ГОЛОВНЕ: скидання всіх фільтрів
+  const resetFilters = () => {
+    setType?.(undefined);
+    setCountry?.(undefined);
   };
 
   return (
@@ -58,27 +60,28 @@ export const NavMenu = ({
           ☰
         </button>
 
-        {/* DESKTOP MENU */}
+        {/* DESKTOP */}
         <div className="hidden md:flex gap-4 items-center">
           <Link href="/" className="btn btn-ghost">
             Головна
           </Link>
-
-          {/* Паломництва dropdown */}
+          {/* 🔥 Паломництва */}
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost">
               Паломництва
             </div>
+
             <ul
               tabIndex={0}
               className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
             >
+              {/* 🔥 Всі країни */}
               <li>
-                <button onClick={() => updateType("pilgrimage")}>
-                  Всі країни
-                </button>
+                <button onClick={resetFilters}>Всі країни</button>
               </li>
+
               <div className="divider my-1"></div>
+
               {COUNTRIES.map((c) => (
                 <li key={c.slug}>
                   <button onClick={() => updateCountry(c.slug)}>
@@ -88,51 +91,52 @@ export const NavMenu = ({
               ))}
             </ul>
           </div>
-
           {/* Море */}
           <button
             onClick={() =>
-              setType?.(selectedType === "sea" ? undefined : "sea")
+              updateType(selectedType === "sea" ? undefined : "sea")
             }
             className="btn btn-ghost"
           >
             Море
           </button>
-
           {/* Термали */}
           <button
             onClick={() =>
-              setType?.(selectedType === "thermals" ? undefined : "thermals")
+              updateType(selectedType === "thermals" ? undefined : "thermals")
             }
             className="btn btn-ghost"
           >
             Термали
           </button>
-
-          {/* Цікаві місця dropdown */}
-          <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost">
-              Цікаве
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
-            >
-              {/* Список цікавих місць */}
-              <li>
-                <Link href="/interesting">Цікаві місця</Link>
-              </li>
-              {/* Додаткові підсторінки, якщо будуть */}
-              <li>
-                <Link href="/interestingThoughts">Думки</Link>
-              </li>
-            </ul>
-          </div>
-
           {/* Інші сторінки */}
           <Link href="/gallery" className="btn btn-ghost">
             Галерея
           </Link>
+          {/* Цікаві місця dropdown */}{" "}
+          <div className="dropdown">
+            {" "}
+            <div tabIndex={0} role="button" className="btn btn-ghost">
+              {" "}
+              Цікаве{" "}
+            </div>{" "}
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+            >
+              {" "}
+              {/* Список цікавих місць */}{" "}
+              <li>
+                {" "}
+                <Link href="/interesting">Цікаві місця</Link>{" "}
+              </li>{" "}
+              {/* Додаткові підсторінки, якщо будуть */}{" "}
+              <li>
+                {" "}
+                <Link href="/interestingThoughts">Думки</Link>{" "}
+              </li>{" "}
+            </ul>{" "}
+          </div>
           <Link href="/contactUs" className="btn btn-ghost">
             Контакти
           </Link>
@@ -165,24 +169,24 @@ export const NavMenu = ({
             ✕
           </button>
 
-          <Link href="/" className="block">
-            Головна
-          </Link>
-          <Link href="/gallery" className="block">
-            Галерея
-          </Link>
-          <Link href="/contactUs" className="block">
-            Контакти
-          </Link>
-          <Link href="/aboutUs" className="block">
-            Про нас
-          </Link>
-          <Link href="/interesting" className="block">
-            Цікаві місця
-          </Link>
-          <Link href="/interesting/thoughts" className="block">
-            Думки
-          </Link>
+          <button onClick={resetFilters}>Всі тури</button>
+
+          <button onClick={() => updateType("sea")}>Море</button>
+          <button onClick={() => updateType("thermals")}>Термали</button>
+
+          <div className="divider"></div>
+
+          {COUNTRIES.map((c) => (
+            <button key={c.slug} onClick={() => updateCountry(c.slug)}>
+              {c.label}
+            </button>
+          ))}
+
+          <div className="divider"></div>
+
+          <Link href="/gallery">Галерея</Link>
+          <Link href="/contactUs">Контакти</Link>
+          <Link href="/aboutUs">Про нас</Link>
         </div>
       </div>
     </nav>
