@@ -50,8 +50,8 @@ export const NavMenu = ({
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#E6D8C3] border-b">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-center">
+    <nav className="sticky top-0 z-50 text-2xl text-blue-950 bg-[#E6D8C3] border-b">
+      <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-center">
         {/* MOBILE BUTTON */}
         <button
           className="md:hidden px-3 py-2 border rounded"
@@ -61,19 +61,19 @@ export const NavMenu = ({
         </button>
 
         {/* DESKTOP */}
-        <div className="hidden md:flex gap-4 items-center">
-          <Link href="/" className="btn btn-ghost">
+        <div className="hidden md:flex gap-4 oswald  items-center ">
+          <Link href="/" className=" btn-ghost">
             Головна
           </Link>
           {/* 🔥 Паломництва */}
           <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost">
+            <div tabIndex={0} role="button" className=" btn-ghost">
               Паломництва
             </div>
 
             <ul
               tabIndex={0}
-              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+              className="dropdown-content menu text-base bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
             >
               {/* 🔥 Всі країни */}
               <li>
@@ -96,7 +96,7 @@ export const NavMenu = ({
             onClick={() =>
               updateType(selectedType === "sea" ? undefined : "sea")
             }
-            className="btn btn-ghost"
+            className=" btn-ghost"
           >
             Море
           </button>
@@ -105,18 +105,18 @@ export const NavMenu = ({
             onClick={() =>
               updateType(selectedType === "thermals" ? undefined : "thermals")
             }
-            className="btn btn-ghost"
+            className=" btn-ghost"
           >
             Термали
           </button>
           {/* Інші сторінки */}
-          <Link href="/gallery" className="btn btn-ghost">
+          <Link href="/gallery" className=" btn-ghost">
             Галерея
           </Link>
           {/* Цікаві місця dropdown */}{" "}
           <div className="dropdown">
             {" "}
-            <div tabIndex={0} role="button" className="btn btn-ghost">
+            <div tabIndex={0} role="button" className=" btn-ghost">
               {" "}
               Цікаве{" "}
             </div>{" "}
@@ -137,10 +137,10 @@ export const NavMenu = ({
               </li>{" "}
             </ul>{" "}
           </div>
-          <Link href="/contactUs" className="btn btn-ghost">
+          <Link href="/contactUs" className=" btn-ghost">
             Контакти
           </Link>
-          <Link href="/aboutUs" className="btn btn-ghost">
+          <Link href="/aboutUs" className=" btn-ghost">
             Про нас
           </Link>
         </div>

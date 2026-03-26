@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Marmelad&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap");
 @import "tailwindcss";
 @plugin "daisyui";
 
@@ -16,10 +17,16 @@ li {
   background-image: url("https://res.cloudinary.com/dwl1expbx/image/upload/v1773125379/white-cloud-blue-sky-sea_iwrjdv.jpg");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed; /* красиво при скролі */
+  background-attachment: fixed;
 }
 .marmelad-font {
   font-family: "Marmelad", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.oswald {
+  font-family: "Roboto Slab", serif;
   font-weight: 600;
   font-style: normal;
 }
