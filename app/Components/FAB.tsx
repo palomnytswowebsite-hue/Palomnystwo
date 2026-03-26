@@ -54,7 +54,7 @@ export const FAB = () => {
 
         {/* VIBER */}
         <a
-          href="https://invite.viber.com/?g=YOUR_GROUP_LINK"
+          href="viber://chat?number=380501010742"
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-lg btn-circle bg-purple-600"
