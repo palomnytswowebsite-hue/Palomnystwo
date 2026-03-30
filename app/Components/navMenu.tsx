@@ -50,7 +50,7 @@ export const NavMenu = ({
   };
 
   return (
-    <nav className="sticky top-0 z-50 text-2xl text-blue-950 bg-[#E6D8C3] border-b">
+    <nav className="sticky top-0 z-50 text-[20px] text-blue-950 bg-[#E6D8C3] border-b">
       <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-center">
         {/* MOBILE BUTTON */}
         <button
@@ -73,7 +73,7 @@ export const NavMenu = ({
 
             <ul
               tabIndex={0}
-              className="dropdown-content menu text-base bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+              className="dropdown-content menu  bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
             >
               {/* 🔥 Всі країни */}
               <li>
