@@ -244,6 +244,20 @@ export default function CityPage() {
               </motion.div>
             )}
 
+            {/* 🔥 ЦІНА */}
+            {hasText(city.TourPrice) && (
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="p-4 bg-base-100 rounded shadow-md"
+              >
+                <strong>Ціна:</strong> {city.TourPrice}
+              </motion.div>
+            )}
+
             {hasArray(city.Country) && (
               <motion.div className="p-4 bg-base-100 rounded shadow-md">
                 <strong>Країна:</strong> {city.Country.join(", ")}
@@ -427,7 +441,7 @@ export default function CityPage() {
           <motion.div className="p-4 bg-base-100 rounded shadow-md">
             <strong>У вартість не входить:</strong>
             <ul className="list-disc list-inside mt-2 space-y-1">
-              {city.INCLUDES!.map((item: string, i: number) => (
+              {city.NOTINCLUDE!.map((item: string, i: number) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>

@@ -25,11 +25,11 @@ export interface City {
   type: string[];
   typeUa: string[];
   chatInfo?: string;
-
+  TourPrice?: string;
   DateOfBeggining?: Timestamp;
   DateOfEnd?: Timestamp;
 
-  upcomingTour?: UpcomingTours[];
+  upcomingTours?: UpcomingTours[];
 
   allDates?: { label: string; value: number }[];
   nearestDate?: string;
@@ -78,15 +78,25 @@ async function fetchAllCities(): Promise<City[]> {
       const cityId = docSnap.id;
       const data = docSnap.data() ?? {};
 
-      // Підколекція TableRow
+      // 🔹 UpcomingTours
       const upcomingTourSnap = await getDocs(
         collection(doc(db, "Cities", cityId), "UpcomingTours"),
       );
+
       const upcomingTours: UpcomingTours[] = upcomingTourSnap.docs.map(
         (rowDoc) => rowDoc.data() as UpcomingTours,
       );
 
-      // Дати з TableRow
+      // 🔥 ЦІНИ (беремо з upcomingTours)
+      let formattedPrice = "";
+
+      const firstPrice = upcomingTours.find((t) => t.albutPrice)?.albutPrice;
+
+      if (firstPrice) {
+        formattedPrice = firstPrice.replace(/\+/g, " + ");
+      }
+
+      // 🔹 Дати з upcomingTours
       const rowDates: { label: string; value: number }[] = upcomingTours
         .map((row) => {
           const ts = parseDateString(row.dates || "");
@@ -94,7 +104,7 @@ async function fetchAllCities(): Promise<City[]> {
         })
         .filter(Boolean) as { label: string; value: number }[];
 
-      // Дати з документа
+      // 🔹 Дати з документа
       const docDates: { label: string; value: number }[] = [];
       if (data.DateOfBeggining && data.DateOfBeggining instanceof Timestamp) {
         const startTs = data.DateOfBeggining.toDate().getTime();
@@ -103,12 +113,13 @@ async function fetchAllCities(): Promise<City[]> {
           const label = `${formatDate(startTs)} – ${formatDate(endTs)}`;
           docDates.push({ label, value: startTs });
         } else {
-          const label = formatDate(startTs);
-          docDates.push({ label, value: startTs });
+          docDates.push({
+            label: formatDate(startTs),
+            value: startTs,
+          });
         }
       }
 
-      // Об’єднуємо всі дати і сортуємо по місяцях і днях
       const allDates = [...rowDates, ...docDates].sort((a, b) => {
         const dateA = new Date(a.value);
         const dateB = new Date(b.value);
@@ -130,6 +141,10 @@ async function fetchAllCities(): Promise<City[]> {
         type: data.type || [],
         typeUa: data.typeUa || [],
         chatInfo: data.chatInfo || "",
+
+        // 🔥 ГОЛОВНЕ
+        TourPrice: formattedPrice || data.TourPrice || "",
+
         DateOfBeggining: data.DateOfBeggining,
         DateOfEnd: data.DateOfEnd,
         upcomingTours,
@@ -167,7 +182,6 @@ export default function HomeClient() {
     fetchCities();
   }, []);
 
-  // Сортування: міста з датами на початку, без дат вкінці
   const visibleCities = useMemo(() => {
     return allCities
       .filter((city) => {
@@ -178,10 +192,8 @@ export default function HomeClient() {
         return typeOk && countryOk;
       })
       .sort((a, b) => {
-        // Міста без дат вкінці
         if (!a.allDates?.length) return 1;
         if (!b.allDates?.length) return -1;
-        // Сортування по першій даті
         return (a.allDates[0].value ?? 0) - (b.allDates[0].value ?? 0);
       });
   }, [allCities, selectedType, selectedCountry]);
